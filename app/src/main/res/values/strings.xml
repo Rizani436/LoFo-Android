@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Assign3</string>
+    <string name="masukkan_username">Masukkan Username</string>
+    <string name="masukkan_password">Masukkan Password</string>
+    <string name="masukkan_konfirmasi_password">Masukkan Konfirmasi Password</string>
+    <string name="masukkan_nama_lengkap"> Masukkan Nama Lengkap</string>
+    <string name="masukkan_jenis_kelamin">Laki-laki / Perempuan</string>
+    <string name="masukkan_nomor_handphone">Masukkan Nomor Handphone</string>
+    <string name="masukkan_alamat">Masukkan Alamat</string>
+    <string name="masukkan_email">Masukkan Email</string>
+</resources>

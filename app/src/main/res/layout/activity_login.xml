@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".login">
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/left"
+        android:clickable="true"
+        android:focusable="true"
+        >
+    </ImageView>
+
+    <TextView
+        android:layout_width="307dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:fontFamily="@font/merienda_bold"
+        android:text="Login"
+        android:textSize="36dp"
+        >
+    </TextView>
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/lofo"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        >
+    </ImageView>
+    <TextView
+        android:layout_width="307dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:fontFamily="@font/merienda_light"
+        android:text="Username"
+        android:textSize="20dp"
+        >
+    </TextView>
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="304dp"
+        android:layout_height="44dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_edittext"
+        android:padding="12dp"
+        android:hint="@string/masukkan_username"
+        android:textSize="16sp"
+        >
+    </EditText>
+
+    <TextView
+        android:layout_width="307dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        android:fontFamily="@font/merienda_light"
+        android:text="Password"
+        android:textSize="20dp"
+        >
+    </TextView>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="304dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_edittext"
+        android:padding="12dp"
+        android:hint="Masukkan Password"
+        android:inputType="textPassword"
+        android:textSize="16sp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:paddingEnd="50dp" /> <!-- Biar gak ketimpa icon -->
+
+    <ImageView
+        android:id="@+id/showPasswordIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/eye_off"
+        android:layout_alignEnd="@id/password"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="5dp"
+        android:padding="5dp" />
+    </RelativeLayout>
+    <Button
+        android:id="@+id/login"
+        android:layout_width="304dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="80dp"
+        android:backgroundTint="#FF0000"
+        android:layout_gravity="center"
+        android:fontFamily="@font/merienda_bold"
+        android:textAlignment="center"
+        android:text="Login"
+        android:textSize="24dp"
+        >
+    </Button>
+    <TextView
+        android:id="@+id/lupaPassword"
+        android:layout_width="307dp"
+        android:layout_height="29dp"
+        android:layout_gravity="center"
+        android:fontFamily="@font/merienda"
+        android:text="Lupa Password"
+        android:textSize="15dp"
+        android:textAlignment="center"
+        android:textColor="#0088FF"
+        android:clickable="true"
+        android:focusable="true"
+        >
+    </TextView>
+
+
+</LinearLayout>

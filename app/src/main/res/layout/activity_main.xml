@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+        <ImageView
+            android:layout_width="299dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="158dp"
+            android:src="@drawable/lofo"></ImageView>
+
+        <TextView
+            android:layout_width="239dp"
+            android:layout_height="104dp"
+            android:fontFamily="@font/merienda_bold"
+            android:layout_gravity="center"
+            android:text="Lost &amp; Found Lombok"
+            android:textAlignment="center"
+            android:textSize="30dp">
+        </TextView>
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="244dp"
+            android:layout_height="64dp"
+            android:backgroundTint="#C8BE8C"
+            android:layout_marginTop="81dp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/merienda_bold"
+            android:textAlignment="center"
+            android:text="Login"
+            android:textSize="24dp"
+            >
+        </Button>
+
+        <Button
+            android:id="@+id/register"
+            android:layout_width="244dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="#BBBBBB"
+            android:layout_gravity="center"
+            android:fontFamily="@font/merienda_bold"
+            android:text="Register"
+            android:textSize="24dp">
+        </Button>
+
+
+</LinearLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/merienda</item>
+        <item>@font/merienda_bold</item>
+        <item>@font/merienda_light</item>
+        <item>@font/merienda_medium</item>
+        <item>@font/merienda_semibold</item>
+    </array>
+</resources>
