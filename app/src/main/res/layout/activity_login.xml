@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".login">
+    android:fitsSystemWindows="true"
+    tools:context=".ui.login.login">
     <ImageView
         android:id="@+id/back"
         android:layout_width="52dp"

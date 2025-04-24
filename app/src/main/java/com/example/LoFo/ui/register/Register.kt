@@ -1,14 +1,27 @@
-package com.example.assign3
+package com.example.LoFo.ui.register
 
-import android.os.Bundle
-import android.widget.*
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
+import android.os.Bundle
 import android.text.InputType
 import android.util.Patterns
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Spinner
+import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import com.example.LoFo.data.api.ApiClient
+import com.example.LoFo.MainActivity
+import com.example.LoFo.R
+import com.example.LoFo.data.model.register.RegisterRequest
+import com.example.LoFo.data.model.register.RegisterResponse
+import com.example.LoFo.ui.login.login
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class Register : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -114,10 +127,41 @@ class Register : AppCompatActivity() {
                 Toast.makeText(this, "Password tidak sama", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val user = User(username.text.toString(), email.text.toString(), password.text.toString(), namaLengkap.text.toString(), selectedGender, alamat.text.toString(), nomorHandphone.text.toString())
-            val intent = Intent(this, login::class.java)
-            intent.putExtra("user_data", user)
-            startActivity(intent)
+            val registerRequest = RegisterRequest(
+                username = username.text.toString(),
+                email = email.text.toString(),
+                password = password.text.toString(),
+                namaLengkap = namaLengkap.text.toString(),
+                jenisKelamin = jenisKelamin.selectedItem.toString(),
+                alamat = alamat.text.toString(),
+                noHP = nomorHandphone.text.toString(),
+                pictUrl = "kjsdhnds/zani.jpg"
+            )
+
+            ApiClient.apiService.registerUser(registerRequest).enqueue(object :
+                Callback<RegisterResponse> {
+                override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+                    if (response.isSuccessful && response.body() != null) {
+                        Toast.makeText(this@Register, "Registrasi berhasil! Silakan login.", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@Register, login::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        errorBody?.let {
+                            val jsonObj = JSONObject(it)
+                            val errorMessage = jsonObj.getString("message")
+                            Toast.makeText(this@Register, "Registrasi gagal.  $errorMessage", Toast.LENGTH_SHORT).show()
+                        }
+
+                    }
+                }
+
+                override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                    Toast.makeText(this@Register, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+
         }
     }
 

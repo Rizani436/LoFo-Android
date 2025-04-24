@@ -1,8 +1,5 @@
-package com.example.assign3
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+package com.example.LoFo.data.model.user
 
-@Parcelize
 data class User(
     val username: String,
     val email: String,
@@ -10,5 +7,6 @@ data class User(
     val namaLengkap: String,
     val jenisKelamin: String,
     val alamat: String,
-    val nomorHandphone: String
-) : Parcelable
+    val noHP: String,
+    val pictUrl: String
+)

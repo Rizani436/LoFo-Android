@@ -1,4 +1,4 @@
-package com.example.assign3
+package com.example.LoFo
 
 import org.junit.Test
 
