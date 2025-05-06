@@ -8,4 +8,7 @@
     <string name="masukkan_nomor_handphone">Masukkan Nomor Handphone</string>
     <string name="masukkan_alamat">Masukkan Alamat</string>
     <string name="masukkan_email">Masukkan Email</string>
+    <string name="navigation_drawer_open">Open navigation</string>
+    <string name="navigation_drawer_close">Close navigation</string>
+    <string name="title_activity_baranghilang">baranghilang</string>
 </resources>
