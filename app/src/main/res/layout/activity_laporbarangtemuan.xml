@@ -1,17 +1,264 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.barangtemuan.laporbarangtemuan">
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".ui.register.Register">
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="lapor barang temuan"
-        tools:layout_editor_absoluteX="182dp"
-        tools:layout_editor_absoluteY="228dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@color/cream">
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/left"
+                android:clickable="true"
+                android:focusable="true"
+                >
+            </ImageView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/merienda_bold"
+                android:text="Formulir Barang Temuan"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                >
+            </TextView>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="307dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/merienda_light"
+            android:textColor="@color/black"
+            android:text="Nama Barang"
+            android:textSize="16dp"
+            android:layout_marginBottom="5dp"
+            >
+        </TextView>
+        <EditText
+            android:id="@+id/namaBarang"
+            android:layout_width="304dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_edittext"
+            android:padding="12dp"
+            android:hint="@string/masukkan_namaBarang"
+            android:textSize="16sp"
+            android:layout_marginBottom="5dp"
+            >
+        </EditText>
+        <TextView
+            android:layout_width="307dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/merienda_light"
+            android:text="Kategori Barang"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            android:layout_marginBottom="5dp"
+            >
+        </TextView>
+        <Spinner
+            android:id="@+id/kategoriBarang"
+            android:layout_width="304dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_edittext"
+            android:padding="12dp"
+            android:layout_marginBottom="5dp"
+            />
+        <TextView
+            android:layout_width="307dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/merienda_light"
+            android:text="Tanggal Penemuan"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            android:layout_marginBottom="5dp"
+            >
+        </TextView>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <EditText
+                android:id="@+id/tanggalPenemuan"
+                android:layout_width="304dp"
+                android:layout_height="44dp"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:hint="mm/dd/yyyy"
+                android:focusable="false"
+                android:clickable="true"
+                android:inputType="none"
+                android:paddingEnd="50dp" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="307dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/merienda_light"
+            android:text="Tempat Penemuan"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            android:layout_marginBottom="5dp"
+            >
+        </TextView>
+        <EditText
+            android:id="@+id/tempatPenemuan"
+            android:layout_width="304dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_edittext"
+            android:padding="12dp"
+            android:hint="@string/masukkan_tempatPenemuan"
+            android:textSize="16sp"
+            android:layout_marginBottom="5dp"
+            >
+        </EditText>
+        <TextView
+            android:layout_width="307dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/merienda_light"
+            android:text="Kota/Kabupaten"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            android:layout_marginBottom="5dp"
+            >
+        </TextView>
+        <Spinner
+            android:id="@+id/kotaKabupaten"
+            android:layout_width="304dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_edittext"
+            android:padding="12dp"
+            android:layout_marginBottom="5dp"
+            />
+
+        <TextView
+            android:layout_width="307dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/merienda_light"
+            android:text="Pertanyaan yang ingin diajukan mengenai barang"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            android:layout_marginBottom="5dp"
+            >
+        </TextView>
+        <EditText
+            android:id="@+id/pertanyaan"
+            android:layout_width="304dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_edittext"
+            android:padding="12dp"
+            android:hint="@string/masukkan_pertanyaan"
+            android:textSize="16sp"
+            android:layout_marginBottom="5dp"
+            >
+        </EditText>
+
+        <TextView
+            android:layout_width="307dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/merienda_light"
+            android:textColor="@color/black"
+            android:text="Nomor Handphone"
+            android:textSize="16dp"
+            android:layout_marginBottom="5dp"
+            >
+        </TextView>
+        <EditText
+            android:id="@+id/nomorHandphone"
+            android:layout_width="304dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_edittext"
+            android:padding="12dp"
+            android:hint="@string/masukkan_nomor_handphone"
+            android:inputType="phone"
+            android:digits="0123456789"
+            android:textSize="16sp"
+            android:layout_marginBottom="5dp"
+            >
+        </EditText>
+        <TextView
+            android:layout_width="307dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/merienda_light"
+            android:text="Gambar Barang"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            android:layout_marginBottom="5dp"
+            >
+        </TextView>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="52dp"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/pilihGambarButton"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:text="Choose File"
+                android:textSize="12dp"
+                android:backgroundTint="@color/black"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/namaFile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No file chosen"
+                android:layout_marginStart="12dp"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/daftar"
+            android:layout_width="304dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="80dp"
+            android:layout_marginBottom="30dp"
+            android:backgroundTint="#005EFF"
+            android:layout_gravity="center"
+            android:fontFamily="@font/merienda_bold"
+            android:textAlignment="center"
+            android:text="Daftar"
+            android:textSize="20dp"
+            >
+        </Button>
+
+
+    </LinearLayout>
+
+</ScrollView>

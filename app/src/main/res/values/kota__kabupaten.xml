@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="kota_kabupaten">
+        <item>Pilih Kota / Kabupaten</item>
+        <item>Kota Mataram</item>
+        <item>Lombok Barat</item>
+        <item>Lombok Tengah</item>
+        <item>Lombok Timur</item>
+        <item>Lombok Utara</item>
+
+    </string-array>
+</resources>
