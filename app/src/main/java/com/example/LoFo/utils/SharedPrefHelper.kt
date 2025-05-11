@@ -55,5 +55,6 @@ object SharedPrefHelper {
         val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         prefs.edit().clear().apply()
     }
+
 }
 

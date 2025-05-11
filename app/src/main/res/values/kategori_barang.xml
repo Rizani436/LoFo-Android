@@ -2,11 +2,11 @@
 <resources>
     <string-array name="kategori_barang">
         <item>Pilih kategori barang</item>
-        <item>Asesoris</item>
+        <item>Aksesoris</item>
         <item>Kendaraan</item>
         <item>Elektronik</item>
         <item>Dokumen</item>
-        <item>Dan lain-lain</item>
+        <item>DLL</item>
 
     </string-array>
 </resources>

@@ -8,5 +8,6 @@ data class User(
     val jenisKelamin: String,
     val alamat: String,
     val noHP: String,
-    val pictUrl: String
+    val pictUrl: String,
+    val jenis: String
 )

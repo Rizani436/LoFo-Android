@@ -5,21 +5,29 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import com.example.LoFo.MainActivity
 import com.example.LoFo.R
 import com.example.LoFo.data.api.ApiClient
 import com.example.LoFo.data.model.logout.LogoutRequest
 import com.example.LoFo.data.model.logout.LogoutResponse
+import com.example.LoFo.data.model.user.User
 import com.example.LoFo.ui.baranghilang.*
 import com.example.LoFo.ui.barangtemuan.*
+import com.example.LoFo.ui.profile.profile
 import com.example.LoFo.utils.SharedPrefHelper
 import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -57,25 +65,30 @@ class Beranda : AppCompatActivity() {
         // Gambar profil di header
         val headerView = navView.getHeaderView(0)
         val imageProfile = headerView.findViewById<ImageView>(R.id.image_profile)
+        val user_name = headerView.findViewById<TextView>(R.id.user_name)
+        user_name.text = user?.username
         imageProfile.setOnClickListener {
-            Toast.makeText(this, "Profil diklik!", Toast.LENGTH_SHORT).show()
+
         }
 
         // Navigasi drawer klik
         navView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_daftar -> {
-                    showSubmenuDialog("Daftar Laporan", listOf("Barang Hilang", "Barang Temuan"), "all")
+                    showSubmenuDialog("Daftar Laporan", listOf("Barang Hilang", "Barang Temuan"), "All", user)
                 }
 
                 R.id.nav_riwayat -> {
-                    showSubmenuDialog("Riwayat Laporan", listOf("Barang Hilang", "Barang Temuan"), "all")
+                    showSubmenuDialog("Riwayat Laporan", listOf("Barang Hilang", "Barang Temuan"), "All", user)
                 }
 
                 R.id.nav_lapor -> {
-                    showSubmenuDialog("Lapor", listOf("Barang Hilang", "Barang Temuan"), "all")
+                    showSubmenuDialog("Lapor", listOf("Barang Hilang", "Barang Temuan"), "All", user)
                 }
-
+                R.id.nav_profil -> {
+                    val intent = Intent(this, profile::class.java)
+                    startActivity(intent)
+                }
                 R.id.nav_keluar -> {
                     performLogout()
                 }
@@ -86,41 +99,59 @@ class Beranda : AppCompatActivity() {
 
         val buttonBarangKehilangan: Button = findViewById(R.id.button_barangKehilangan)
         buttonBarangKehilangan.setOnClickListener {
-            val intent = Intent(this, daftarbaranghilang::class.java)
-            intent.putExtra("kategori", "all")
-            startActivity(intent)
+            val username = user?.username
+            lifecycleScope.launch {
+                try {
+                    val response = ApiClient.apiService.getOtherAllBarangHilang(username.toString(), "All")
+                    val intent = Intent(this@Beranda, daftarbaranghilang::class.java)
+                    intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
+                    startActivity(intent)
+
+                } catch (e: Exception) {
+                    Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         val buttonBarangTemuan: Button = findViewById(R.id.button_barangTemuan)
         buttonBarangTemuan.setOnClickListener {
-            val intent = Intent(this, daftarbarangtemuan::class.java)
-            intent.putExtra("kategori", "all")
-            startActivity(intent)
+            val username = user?.username
+            lifecycleScope.launch {
+                try {
+                    val response = ApiClient.apiService.getOtherAllBarangTemuan(username.toString(), "All")
+                    val intent = Intent(this@Beranda, daftarbarangtemuan::class.java)
+                    intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
+                    startActivity(intent)
+
+                } catch (e: Exception) {
+                    Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         val aksesoris= findViewById<RelativeLayout>(R.id.kategori_aksesoris)
         aksesoris.setOnClickListener {
-            showSubmenuDialog("Aksesoris", listOf("Barang Hilang", "Barang Temuan"), "aksesoris")
+            showSubmenuDialog("Aksesoris", listOf("Barang Hilang", "Barang Temuan"), "Aksesoris", user)
         }
 
         val kendaraan= findViewById<RelativeLayout>(R.id.kategori_kendaraan)
         kendaraan.setOnClickListener {
-            showSubmenuDialog("Kendaraan", listOf("Barang Hilang", "Barang Temuan"), "kendaraan")
+            showSubmenuDialog("Kendaraan", listOf("Barang Hilang", "Barang Temuan"), "Kendaraan", user)
         }
 
         val elektronik= findViewById<RelativeLayout>(R.id.kategori_elektronik)
         elektronik.setOnClickListener {
-            showSubmenuDialog("Elektronik", listOf("Barang Hilang", "Barang Temuan"), "elektronik")
+            showSubmenuDialog("Elektronik", listOf("Barang Hilang", "Barang Temuan"), "Elektronik", user)
         }
 
         val dokumen= findViewById<RelativeLayout>(R.id.kategori_dokumen)
         dokumen.setOnClickListener {
-            showSubmenuDialog("Dokumen", listOf("Barang Hilang", "Barang Temuan"), "dokumen")
+            showSubmenuDialog("Dokumen", listOf("Barang Hilang", "Barang Temuan"), "Dokumen", user)
         }
 
         val lainnya = findViewById<RelativeLayout>(R.id.kategori_lainnya)
         lainnya.setOnClickListener {
-            showSubmenuDialog("Lainnya", listOf("Barang Hilang", "Barang Temuan"), "lainnya")
+            showSubmenuDialog("DLL", listOf("Barang Hilang", "Barang Temuan"), "DLL", user)
         }
 
 //        val buttonLogout: Button = findViewById(R.id.buttonLogout)
@@ -128,31 +159,79 @@ class Beranda : AppCompatActivity() {
 //            performLogout()
 //        }
     }
-    val kategoriArray = listOf("Aksesoris", "Elektronik", "Kendaraan", "Dokumen", "Lainnya").toTypedArray()
+    val kategoriArray = listOf("Aksesoris", "Elektronik", "Kendaraan", "Dokumen", "DLL").toTypedArray()
 
-    private fun showSubmenuDialog(title: String, items: List<String>, kategori: String) {
+    private fun showSubmenuDialog(title: String, items: List<String>, kategori: String, user: User?) {
+        val username = user?.username
         val itemsArray = items.toTypedArray()
         AlertDialog.Builder(this)
             .setTitle(title)
             .setItems(itemsArray) { _, which ->
                 val selected = items[which]
-                val intent = if (selected == "Barang Hilang") {
+                if (selected == "Barang Hilang") {
                     if (title == "Daftar Laporan" || kategoriArray.contains(title)) {
-                        Intent(this, daftarbaranghilang::class.java)
+                        lifecycleScope.launch {
+                            try {
+                                val response = ApiClient.apiService.getOtherAllBarangHilang(username.toString(), kategori.toString())
+                                val intent = Intent(this@Beranda, daftarbaranghilang::class.java)
+                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
+                                startActivity(intent)
+
+                            } catch (e: Exception) {
+                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
                     } else if (title == "Riwayat Laporan") {
-                        Intent(this, riwayatbaranghilang::class.java)
+
+                        lifecycleScope.launch {
+                            try {
+                                val response = ApiClient.apiService.getMyAllBarangHilang(username.toString())
+                                val intent = Intent(this@Beranda, riwayatbaranghilang::class.java)
+                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
+                                startActivity(intent)
+
+                            } catch (e: Exception) {
+                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
                     }else if (title == "Lapor") {
-                        Intent(this, laporbaranghilang::class.java)
+                        val intent = Intent(this, laporbaranghilang::class.java)
+                        startActivity(intent)
                     } else {
                         null
                     }
                 } else if (selected == "Barang Temuan") {
                     if (title == "Daftar Laporan"|| kategoriArray.contains(title)) {
-                        Intent(this, daftarbarangtemuan::class.java)
+                        lifecycleScope.launch {
+                            try {
+                                val response = ApiClient.apiService.getOtherAllBarangTemuan(username.toString(), kategori.toString())
+                                val intent = Intent(this@Beranda, daftarbarangtemuan::class.java)
+                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
+                                startActivity(intent)
+
+                            } catch (e: Exception) {
+                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
                     } else if (title == "Riwayat Laporan") {
-                        Intent(this, riwayatbarangtemuan::class.java)
+                        lifecycleScope.launch {
+                            try {
+                                val response = ApiClient.apiService.getMyAllBarangTemuan(username.toString())
+                                val intent = Intent(this@Beranda, riwayatbarangtemuan::class.java)
+                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
+                                startActivity(intent)
+
+                            } catch (e: Exception) {
+                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
                     }else if (title == "Lapor") {
-                        Intent(this, laporbarangtemuan::class.java)
+                        val intent = Intent(this, laporbarangtemuan::class.java)
+                        startActivity(intent)
                     } else {
                         null
                     }
@@ -160,8 +239,88 @@ class Beranda : AppCompatActivity() {
                     null
                 }
 
-                intent?.putExtra("kategori", kategori)
-                intent?.let { startActivity(it) }
+            }
+            .show()
+    }
+
+    private fun showSubmenuDialogLogout(title: String, items: List<String>, kategori: String, user: User?) {
+        val username = user?.username
+        val itemsArray = items.toTypedArray()
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setItems(itemsArray) { _, which ->
+                val selected = items[which]
+                if (selected == "Barang Hilang") {
+                    if (title == "Daftar Laporan" || kategoriArray.contains(title)) {
+                        lifecycleScope.launch {
+                            try {
+                                val response = ApiClient.apiService.getOtherAllBarangHilang(username.toString(), kategori.toString())
+                                val intent = Intent(this@Beranda, daftarbaranghilang::class.java)
+                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
+                                startActivity(intent)
+
+                            } catch (e: Exception) {
+                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+                    } else if (title == "Riwayat Laporan") {
+
+                        lifecycleScope.launch {
+                            try {
+                                val response = ApiClient.apiService.getMyAllBarangHilang(username.toString())
+                                val intent = Intent(this@Beranda, riwayatbaranghilang::class.java)
+                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
+                                startActivity(intent)
+
+                            } catch (e: Exception) {
+                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+                    }else if (title == "Lapor") {
+                        val intent = Intent(this, laporbaranghilang::class.java)
+                        startActivity(intent)
+                    } else {
+                        null
+                    }
+                } else if (selected == "Barang Temuan") {
+                    if (title == "Daftar Laporan"|| kategoriArray.contains(title)) {
+                        lifecycleScope.launch {
+                            try {
+                                val response = ApiClient.apiService.getOtherAllBarangTemuan(username.toString(), kategori.toString())
+                                val intent = Intent(this@Beranda, daftarbarangtemuan::class.java)
+                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
+                                startActivity(intent)
+
+                            } catch (e: Exception) {
+                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+                    } else if (title == "Riwayat Laporan") {
+                        lifecycleScope.launch {
+                            try {
+                                val response = ApiClient.apiService.getMyAllBarangTemuan(username.toString())
+                                val intent = Intent(this@Beranda, riwayatbarangtemuan::class.java)
+                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
+                                startActivity(intent)
+
+                            } catch (e: Exception) {
+                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+                    }else if (title == "Lapor") {
+                        val intent = Intent(this, laporbarangtemuan::class.java)
+                        startActivity(intent)
+                    } else {
+                        null
+                    }
+                } else {
+                    null
+                }
+
             }
             .show()
     }
@@ -191,4 +350,7 @@ class Beranda : AppCompatActivity() {
             }
         })
     }
+
+    fun toRequestBody(value: String): RequestBody =
+        value.toRequestBody("text/plain".toMediaTypeOrNull())
 }

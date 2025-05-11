@@ -2,8 +2,11 @@ package com.example.LoFo.ui.baranghilang
 
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.text.InputType
 import android.util.Patterns
@@ -16,6 +19,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.LoFo.MainActivity
@@ -40,11 +44,17 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.Calendar
 import retrofit2.*
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class laporbaranghilang : AppCompatActivity() {
     private lateinit var pilihGambarButton: Button
     private lateinit var namaFile: TextView
-    private val PICK_IMAGE_REQUEST = 1
+    val REQUEST_IMAGE_CAPTURE = 1
+    private val PICK_IMAGE_REQUEST = 2
+    private val CAMERA_PERMISSION_CODE = 100
     private var selectedImageUri: Uri? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,10 +85,20 @@ class laporbaranghilang : AppCompatActivity() {
         pilihGambarButton = findViewById(R.id.pilihGambarButton)
         namaFile = findViewById(R.id.namaFile)
         pilihGambarButton.setOnClickListener {
-            // Intent untuk memilih gambar
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/*"
-            startActivityForResult(intent, PICK_IMAGE_REQUEST)
+            val options = arrayOf("Ambil Foto", "Pilih dari Galeri")
+            val builder = android.app.AlertDialog.Builder(this)
+            builder.setTitle("Pilih Sumber Gambar")
+            builder.setItems(options) { _, which ->
+                when (which) {
+                    0 -> checkCameraPermissionAndOpenCamera()
+                    1 -> {
+                        val intent = Intent(Intent.ACTION_GET_CONTENT)
+                        intent.type = "image/*"
+                        startActivityForResult(intent, PICK_IMAGE_REQUEST)
+                    }
+                }
+            }
+            builder.show()
         }
         tanggalKehilangan.setOnClickListener {
             val kalender = Calendar.getInstance()
@@ -140,7 +160,7 @@ class laporbaranghilang : AppCompatActivity() {
             val fileUri = selectedImageUri!!
             val inputStream = contentResolver.openInputStream(fileUri)
             val fileBytes = inputStream!!.readBytes()
-            val fileName = getFileName(fileUri)
+            val fileName = getFileName(fileUri) ?: "uploaded_image.jpg"
 
             val requestFile = fileBytes.toRequestBody("image/*".toMediaTypeOrNull())
             val filePart = MultipartBody.Part.createFormData("file", fileName, requestFile)
@@ -231,15 +251,66 @@ class laporbaranghilang : AppCompatActivity() {
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
-            // Mendapatkan URI file yang dipilih
-            selectedImageUri = data?.data
-            selectedImageUri?.let { uri ->
-                // Mendapatkan nama file dari URI
-                val fileName = getFileName(uri)
-                // Tampilkan nama file di TextView
+
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                PICK_IMAGE_REQUEST -> {
+                    selectedImageUri = data?.data
+                }
+                REQUEST_IMAGE_CAPTURE -> {
+                    // URI sudah diset di openCamera
+                    // selectedImageUri sudah berisi file dari kamera
+                }
+            }
+
+            selectedImageUri?.let {
+                val fileName = getFileName(it)
                 namaFile.text = fileName
             }
+        }
+    }
+
+
+    fun openCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val photoFile = createImageFile()
+        if (photoFile != null) {
+            selectedImageUri = FileProvider.getUriForFile(
+                this,
+                "${packageName}.provider",
+                photoFile
+            )
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImageUri)
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
+        } else {
+            Toast.makeText(this, "Gagal membuat file gambar", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera()
+            } else {
+                Toast.makeText(this, "Izin kamera ditolak", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+
+    fun createImageFile(): File {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir)
+    }
+
+    private fun checkCameraPermissionAndOpenCamera() {
+        if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(android.Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
+        } else {
+            openCamera()
         }
     }
 
