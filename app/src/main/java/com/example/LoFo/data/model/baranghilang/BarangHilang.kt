@@ -15,7 +15,7 @@ data class BarangHilang(
     val informasiDetail: String,
     val noHP: String,
     val pictUrl: String,
-    val status: String,
+    var status: String,
     val latitude: Double,
     val longitude: Double
 ): Parcelable

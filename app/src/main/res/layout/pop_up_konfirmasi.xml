@@ -1,0 +1,52 @@
+<!-- res/layout/dialog_edit_name.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/titlePopUp"
+        android:text="Apakah anda ingin ....?"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonTidak"
+        android:layout_width="145dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="center"
+        android:fontFamily="@font/merienda_bold"
+        android:textAlignment="center"
+        android:paddingTop="0dp"
+        android:text="Tidak"
+        android:textSize="20dp"
+        app:cornerRadius="3dp"
+        app:backgroundTint="#8BC34A"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonIya"
+        android:layout_width="145dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="center"
+        android:fontFamily="@font/merienda_bold"
+        android:textAlignment="center"
+        android:paddingTop="0dp"
+        android:text="Iya"
+        android:textSize="20dp"
+        app:cornerRadius="3dp"
+        app:backgroundTint="#FF0000"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

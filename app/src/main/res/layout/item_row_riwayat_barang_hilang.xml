@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:textStyle="bold"
                 android:paddingLeft="5dp"
                 android:text="Nama Barang"
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/namaBarang"
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:background="@drawable/border"
@@ -59,7 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:textStyle="bold"
                 android:paddingLeft="5dp"
                 android:text="Kategori Barang"
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/kategoriBarang"
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:paddingLeft="5dp"
                 android:background="@drawable/border"
                 android:layout_alignParentRight="true"
@@ -83,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:textStyle="bold"
                 android:paddingLeft="5dp"
                 android:text="Tanggal Kehilangan"
@@ -95,7 +95,7 @@
                 android:id="@+id/tanggalKehilangan"
                 android:maxLines="2"
                 android:paddingTop="5dp"
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:paddingLeft="5dp"
                 android:background="@drawable/border"
                 android:paddingRight="5dp"
@@ -109,7 +109,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:textStyle="bold"
                 android:paddingLeft="5dp"
                 android:text="Tempat Kehilangan"
@@ -120,7 +120,7 @@
             <TextView
                 android:id="@+id/tempatKehilangan"
                 android:maxLines="2"
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:background="@drawable/border"
@@ -134,7 +134,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:textStyle="bold"
                 android:paddingRight="5dp"
                 android:paddingLeft="5dp"
@@ -145,7 +145,7 @@
             <TextView
                 android:id="@+id/kotaKabupaten"
                 android:maxLines="2"
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:background="@drawable/border"
@@ -159,7 +159,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:textStyle="bold"
                 android:paddingLeft="5dp"
                 android:text="Informasi Detail"
@@ -170,7 +170,7 @@
             <TextView
                 android:id="@+id/informasiDetail"
                 android:maxLines="5"
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:background="@drawable/border"
@@ -184,7 +184,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:textStyle="bold"
                 android:paddingLeft="5dp"
                 android:text="Nomor Handphone"
@@ -195,7 +195,7 @@
             <TextView
                 android:id="@+id/noHP"
                 android:maxLines="2"
-                android:textSize="12sp"
+                android:textSize="12dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:background="@drawable/border"

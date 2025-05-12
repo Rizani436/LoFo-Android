@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.LoFo.MainActivity
 import com.example.LoFo.R
 import com.example.LoFo.data.api.ApiClient
@@ -39,6 +40,7 @@ class Beranda : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_beranda)
         val user = SharedPrefHelper.getUser(this)
+        val imageUrl = user?.pictUrl
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -65,6 +67,11 @@ class Beranda : AppCompatActivity() {
         // Gambar profil di header
         val headerView = navView.getHeaderView(0)
         val imageProfile = headerView.findViewById<ImageView>(R.id.image_profile)
+        Glide.with(this)
+            .load(imageUrl)
+            .placeholder(R.drawable.profile_picture) // opsional, untuk gambar loading
+            .error(R.drawable.profile_picture)           // opsional, untuk gambar gagal load
+            .into(imageProfile)
         val user_name = headerView.findViewById<TextView>(R.id.user_name)
         user_name.text = user?.username
         imageProfile.setOnClickListener {
@@ -154,10 +161,6 @@ class Beranda : AppCompatActivity() {
             showSubmenuDialog("DLL", listOf("Barang Hilang", "Barang Temuan"), "DLL", user)
         }
 
-//        val buttonLogout: Button = findViewById(R.id.buttonLogout)
-//        buttonLogout.setOnClickListener {
-//            performLogout()
-//        }
     }
     val kategoriArray = listOf("Aksesoris", "Elektronik", "Kendaraan", "Dokumen", "DLL").toTypedArray()
 

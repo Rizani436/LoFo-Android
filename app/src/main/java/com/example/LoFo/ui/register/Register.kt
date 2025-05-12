@@ -135,7 +135,7 @@ class Register : AppCompatActivity() {
                 jenisKelamin = jenisKelamin.selectedItem.toString(),
                 alamat = alamat.text.toString(),
                 noHP = nomorHandphone.text.toString(),
-                pictUrl = "kjsdhnds/zani.jpg"
+                pictUrl = "profile/kosong.jpg"
             )
 
             ApiClient.apiService.registerUser(registerRequest).enqueue(object :

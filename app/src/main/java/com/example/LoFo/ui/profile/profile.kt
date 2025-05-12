@@ -1,5 +1,6 @@
 package com.example.LoFo.ui.profile
 
+import android.R.attr.id
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import android.text.InputType
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.widget.Button
@@ -15,6 +17,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -34,7 +37,6 @@ import com.example.LoFo.data.model.user.User
 import com.example.LoFo.ui.baranghilang.*
 import com.example.LoFo.ui.barangtemuan.*
 import com.example.LoFo.ui.beranda.Beranda
-import com.example.LoFo.ui.login.login
 import com.example.LoFo.utils.SharedPrefHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
@@ -53,6 +55,9 @@ import java.util.Date
 import java.util.Locale
 import retrofit2.*
 import android.util.Log
+import com.yalantis.ucrop.UCrop
+
+
 import com.example.LoFo.ui.login.login
 
 import kotlin.collections.contains
@@ -60,14 +65,18 @@ import kotlin.collections.contains
 class profile : AppCompatActivity() {
     private lateinit var pilihGambarButton: RelativeLayout
     private lateinit var namaFile: TextView
-    val REQUEST_IMAGE_CAPTURE = 1
-    private val PICK_IMAGE_REQUEST = 2
-    private val CAMERA_PERMISSION_CODE = 100
+    var REQUEST_IMAGE_CAPTURE = 1
+    private var PICK_IMAGE_REQUEST = 2
+    private val REQUEST_IMAGE_CROP = 3
+    private var CAMERA_PERMISSION_CODE = 100
     private var selectedImageUri: Uri? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         val user = SharedPrefHelper.getUser(this)
+        val userId = user?.username ?: return
+        val imageUrl = user.pictUrl
+
 
 
 
@@ -84,15 +93,26 @@ class profile : AppCompatActivity() {
         val nomorHp = findViewById<TextView>(R.id.noHP)
         nomorHp.text = user?.noHP
         val imageView = findViewById<ImageView>(R.id.image_profile)
+        Glide.with(this)
+            .load(imageUrl)
+            .placeholder(R.drawable.profile_picture) // opsional, untuk gambar loading
+            .error(R.drawable.profile_picture)           // opsional, untuk gambar gagal load
+            .into(imageView)
 
         pilihGambarButton = findViewById(R.id.pilihGambarButton)
         pilihGambarButton.setOnClickListener {
+            REQUEST_IMAGE_CAPTURE = 1
+            PICK_IMAGE_REQUEST = 2
+            CAMERA_PERMISSION_CODE = 100
+            selectedImageUri= null
             val options = arrayOf("Ambil Foto", "Pilih dari Galeri", "Hapus Gambar")
-            val builder = android.app.AlertDialog.Builder(this)
+            val builder = AlertDialog.Builder(this)
             builder.setTitle("Pilih Sumber Gambar")
             builder.setItems(options) { _, which ->
                 when (which) {
-                    0 -> checkCameraPermissionAndOpenCamera()
+                    0 -> {
+                        checkCameraPermissionAndOpenCamera()
+                    }
                     1 -> {
                         val intent = Intent(Intent.ACTION_GET_CONTENT)
                         intent.type = "image/*"
@@ -100,13 +120,34 @@ class profile : AppCompatActivity() {
                     }
                     2 -> {
                         imageView.setImageResource(R.drawable.profile_picture)
-                        selectedImageUri = null
-                        Toast.makeText(this, "Gambar dihapus", Toast.LENGTH_SHORT).show()
-                    }
+                        val user = SharedPrefHelper.getUser(this)
+                        val userId = user?.username ?: return@setItems
+                        ApiClient.apiService.deleteProfile(userId)
+                            .enqueue(object : Callback<User> {
+                                override fun onResponse(call: Call<User>, response: Response<User>) {
+                                    if (response.isSuccessful) {
+                                        response.body()?.let { updatedUser ->
+                                            SharedPrefHelper.saveUser(this@profile, updatedUser)
+                                            Toast.makeText(this@profile, "Gambar Profile berhasil dihapus", Toast.LENGTH_SHORT).show()
+                                            startActivity(Intent(this@profile, profile::class.java))
+                                            finish()
+                                        }
+                                    } else {
+                                        val msg = JSONObject(response.errorBody()?.string() ?: "{}")
+                                            .optString("message", "Terjadi kesalahan.")
+                                        Toast.makeText(this@profile, msg, Toast.LENGTH_SHORT).show()
+                                    }
+                                }
 
+                                override fun onFailure(call: Call<User>, t: Throwable) {
+                                    Toast.makeText(this@profile, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                                }
+                            })
+                    }
                 }
             }
             builder.show()
+
         }
         var buttonBack : ImageView = findViewById<ImageView>(R.id.back)
         buttonBack.setOnClickListener {
@@ -147,31 +188,80 @@ class profile : AppCompatActivity() {
 
         val buttonUbahPassword: LinearLayout = findViewById(R.id.buttonUbahPassword)
         buttonUbahPassword.setOnClickListener {
-            Toast.makeText(this, "Ubah Password", Toast.LENGTH_SHORT).show()
+            showEditNameDialogPassword()
 
         }
 
 
     }
+    fun selectImage() {
+        val options = arrayOf("Ambil Foto", "Pilih dari Galeri")
+        val builder = android.app.AlertDialog.Builder(this)
+        builder.setTitle("Pilih Sumber Gambar")
+        builder.setItems(options) { _, which ->
+            when (which) {
+                0 -> {
+                    // Memulai kamera
+                    openCamera()
+                }
+                1 -> {
+                    // Memulai galeri
+                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type = "image/*"
+                    startActivityForResult(intent, PICK_IMAGE_REQUEST)
+                }
+            }
+        }
+        builder.show()
+    }
+
+    // Fungsi untuk menangani hasil dari memilih gambar
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == RESULT_OK) {
             when (requestCode) {
                 PICK_IMAGE_REQUEST -> {
-                    selectedImageUri = data?.data
+                    val selectedImageUri = data?.data
+                    selectedImageUri?.let {
+                        startCrop(it)
+                    }
                 }
-                REQUEST_IMAGE_CAPTURE -> {
-                    // URI sudah diset di openCamera
-                    // selectedImageUri sudah berisi file dari kamera
-                }
-            }
 
-            selectedImageUri?.let {
-                val fileName = getFileName(it)
+                REQUEST_IMAGE_CROP -> {
+                    val resultUri = UCrop.getOutput(data!!)
+                    if (resultUri != null) {
+                        val imageView = findViewById<ImageView>(R.id.image_profile)
+                        Glide.with(this).load(resultUri).into(imageView)
+
+                        // ✅ Upload gambar hasil crop ke server
+                        uploadProfileImage(resultUri)
+                    } else {
+                        Toast.makeText(this, "Gagal crop gambar", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                REQUEST_IMAGE_CAPTURE -> {
+                    selectedImageUri?.let {
+                        startCrop(it) // Jika dari kamera, langsung crop juga
+                    }
+                }
             }
         }
     }
+
+    // Fungsi untuk memulai UCrop untuk crop gambar dengan rasio 1:1
+    fun startCrop(uri: Uri) {
+        // Tentukan lokasi tujuan untuk gambar yang sudah dicrop
+        val destinationUri = Uri.fromFile(File(cacheDir, "cropped_image.jpg"))
+
+        // Memulai UCrop dengan rasio 1:1
+        UCrop.of(uri, destinationUri)
+            .withAspectRatio(1f, 1f)  // Menetapkan rasio 1:1
+            .withMaxResultSize(500, 500)  // Menetapkan ukuran maksimal hasil crop
+            .start(this, REQUEST_IMAGE_CROP)
+    }
+
     private fun showEditNameDialog(jenis: String) {
         val user = SharedPrefHelper.getUser(this)
         val id = user?.username
@@ -192,53 +282,51 @@ class profile : AppCompatActivity() {
 
                 if (newName.isNotEmpty()) {
 
-                    val updatedUser = user?.copy(jenis = newName)
-                    SharedPrefHelper.saveUser(this, updatedUser)
-
-                    val map = mutableMapOf<String, RequestBody>()
+                    val updateMap = mutableMapOf<String, String>()
 
                     if(jenis=="Username"){
-                        map["username"] = newName.toRequestBody("text/plain".toMediaTypeOrNull())
+                        updateMap["username"] = newName.toString()
                     }
                     else if(jenis=="Email"){
                         if (!Patterns.EMAIL_ADDRESS.matcher(newName.toString()).matches()) {
                             Toast.makeText(this, "Format email tidak valid", Toast.LENGTH_SHORT).show()
                             return@setPositiveButton
                         }
-                        map["email"] = newName.toRequestBody("text/plain".toMediaTypeOrNull())
+                        updateMap["email"] = newName.toString()
                     }
                     else if(jenis=="Nama Lengkap"){
-                        map["namaLengkap"] = newName.toRequestBody("text/plain".toMediaTypeOrNull())
+                        updateMap["namaLengkap"] = newName.toString()
                     }
                     else if(jenis=="Jenis Kelamin"){
-                        map["jenisKelamin"] = newName.toRequestBody("text/plain".toMediaTypeOrNull())
+                        updateMap["jenisKelamin"] = newName.toString()
                     }
                     else if(jenis=="Alamat"){
-                        map["alamat"] = newName.toRequestBody("text/plain".toMediaTypeOrNull())
+                        updateMap["alamat"] = newName.toString()
                     }
                     else if(jenis=="Nomor HP"){
-                        map["noHP"] = newName.toRequestBody("text/plain".toMediaTypeOrNull())
+                        updateMap["noHP"] = newName.toString()
                     } else if (jenis == "Password") {
-                        map["password"] = newName.toRequestBody("text/plain".toMediaTypeOrNull())
+                        updateMap["password"] = newName.toString()
                     }
 
-
-
-                    ApiClient.apiService.updateUser(id.toString(), map).enqueue(object : Callback<User> {
-                        override fun onResponse(call: Call<LoginResponse>, \response: Response<User>) {
+                    ApiClient.apiService.updateUser(id.toString(), updateMap).enqueue(object : Callback<User> {
+                        override fun onResponse(call: Call<User>, response: Response<User>) {
                             if (response.isSuccessful) {
-                                val loginResponse = response.body()
-                                val user = loginResponse
-                                SharedPrefHelper.saveUser(this@profile, user)
-
-                                Toast.makeText(this@profile, "Login berhasil!", Toast.LENGTH_SHORT).show()
-                                startActivity(Intent(this@profile, Beranda::class.java))
+                                val user = response.body()
+                                if (user != null) {
+                                    Log.d("UserUpdate", user.toString())
+                                    SharedPrefHelper.saveUser(this@profile, user)
+                                    Toast.makeText(this@profile, "Update berhasil!", Toast.LENGTH_SHORT).show()
+                                    startActivity(Intent(this@profile, profile::class.java))
+                                } else {
+                                    Toast.makeText(this@profile, "Update gagal: data kosong", Toast.LENGTH_SHORT).show()
+                                }
                             } else {
                                 val errorBody = response.errorBody()?.string()
                                 errorBody?.let {
                                     val jsonObj = JSONObject(it)
-                                    val errorMessage = jsonObj.getString("message")
-                                    Toast.makeText(this@profile, "Login gagal: $errorMessage", Toast.LENGTH_SHORT).show()
+                                    val errorMessage = jsonObj.optString("message", "Terjadi kesalahan.")
+                                    Toast.makeText(this@profile, "Update gagal: $errorMessage", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
@@ -247,6 +335,7 @@ class profile : AppCompatActivity() {
                             Toast.makeText(this@profile, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                         }
                     })
+
                 } else {
                     Toast.makeText(this, "Nama $jenis tidak boleh kosong", Toast.LENGTH_SHORT).show()
                 }
@@ -255,88 +344,104 @@ class profile : AppCompatActivity() {
             .show()
     }
 
-    val kategoriArray = listOf("Aksesoris", "Elektronik", "Kendaraan", "Dokumen", "DLL").toTypedArray()
-//    private fun showSubmenuDialog(title: String, items: List<String>, kategori: String, user: User?) {
-//        val username = user?.username
-//        val itemsArray = items.toTypedArray()
-//        AlertDialog.Builder(this)
-//            .setTitle(title)
-//            .setItems(itemsArray) { _, which ->
-//                val selected = items[which]
-//                if (selected == "Barang Hilang") {
-//                    if (title == "Daftar Laporan" || kategoriArray.contains(title)) {
-//                        lifecycleScope.launch {
-//                            try {
-//                                val response = ApiClient.apiService.getOtherAllBarangHilang(username.toString(), kategori.toString())
-//                                val intent = Intent(this@Beranda, daftarbaranghilang::class.java)
-//                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
-//                                startActivity(intent)
-//
-//                            } catch (e: Exception) {
-//                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
-//                            }
-//                        }
-//
-//                    } else if (title == "Riwayat Laporan") {
-//
-//                        lifecycleScope.launch {
-//                            try {
-//                                val response = ApiClient.apiService.getMyAllBarangHilang(username.toString())
-//                                val intent = Intent(this@Beranda, riwayatbaranghilang::class.java)
-//                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
-//                                startActivity(intent)
-//
-//                            } catch (e: Exception) {
-//                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
-//                            }
-//                        }
-//
-//                    }else if (title == "Lapor") {
-//                        val intent = Intent(this, laporbaranghilang::class.java)
-//                        startActivity(intent)
-//                    } else {
-//                        null
-//                    }
-//                } else if (selected == "Barang Temuan") {
-//                    if (title == "Daftar Laporan"|| kategoriArray.contains(title)) {
-//                        lifecycleScope.launch {
-//                            try {
-//                                val response = ApiClient.apiService.getOtherAllBarangTemuan(username.toString(), kategori.toString())
-//                                val intent = Intent(this@Beranda, daftarbarangtemuan::class.java)
-//                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
-//                                startActivity(intent)
-//
-//                            } catch (e: Exception) {
-//                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
-//                            }
-//                        }
-//
-//                    } else if (title == "Riwayat Laporan") {
-//                        lifecycleScope.launch {
-//                            try {
-//                                val response = ApiClient.apiService.getMyAllBarangTemuan(username.toString())
-//                                val intent = Intent(this@Beranda, riwayatbarangtemuan::class.java)
-//                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
-//                                startActivity(intent)
-//
-//                            } catch (e: Exception) {
-//                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
-//                            }
-//                        }
-//
-//                    }else if (title == "Lapor") {
-//                        val intent = Intent(this, laporbarangtemuan::class.java)
-//                        startActivity(intent)
-//                    } else {
-//                        null
-//                    }
-//                } else {
-//                    null
-//                }
-//
-//            }
-//            .show()
-//    }
+    private fun showEditNameDialogPassword() {
+        val user = SharedPrefHelper.getUser(this)
+        val id = user?.username ?: return
+
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_password, null)
+        val passwordBaru = view.findViewById<EditText>(R.id.passwordBaru)
+        val passwordBaruLagi = view.findViewById<EditText>(R.id.passwordBaruLagi)
+        val passwordLama = view.findViewById<EditText>(R.id.passwordLama)
+
+        val showPasswordLamaIcon = view.findViewById<ImageView>(R.id.showPasswordLamaIcon)
+        val showPasswordBaruIcon = view.findViewById<ImageView>(R.id.showPasswordBaruIcon)
+        val showPasswordBaruLagiIcon = view.findViewById<ImageView>(R.id.showPasswordBaruLagiIcon)
+
+        var isPasswordLamaVisible = false
+        var isPasswordBaruVisible = false
+        var isPasswordBaruLagiVisible = false
+
+        showPasswordLamaIcon.setOnClickListener {
+            isPasswordLamaVisible = !isPasswordLamaVisible
+            togglePasswordVisibility(passwordLama, showPasswordLamaIcon, isPasswordLamaVisible)
+        }
+
+        showPasswordBaruIcon.setOnClickListener {
+            isPasswordBaruVisible = !isPasswordBaruVisible
+            togglePasswordVisibility(passwordBaru, showPasswordBaruIcon, isPasswordBaruVisible)
+        }
+
+        showPasswordBaruLagiIcon.setOnClickListener {
+            isPasswordBaruLagiVisible = !isPasswordBaruLagiVisible
+            togglePasswordVisibility(passwordBaruLagi, showPasswordBaruLagiIcon, isPasswordBaruLagiVisible)
+        }
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(view)
+            .setPositiveButton("Simpan", null) // null agar tidak auto-dismiss
+            .setNegativeButton("Batal", null)
+            .create()
+
+        dialog.setOnShowListener {
+            val btnSimpan = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            btnSimpan.setOnClickListener {
+                val password = passwordLama.text.toString().trim()
+                val newPassword = passwordBaru.text.toString().trim()
+                val confirmPassword = passwordBaruLagi.text.toString().trim()
+
+                if (password.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
+                    Toast.makeText(this, "Semua field harus diisi", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (newPassword != confirmPassword) {
+                    Toast.makeText(this, "Password baru tidak cocok", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                val updateMap = mapOf(
+                    "password" to password,
+                    "newPassword" to newPassword,
+                    "confirmPassword" to confirmPassword
+                )
+
+                ApiClient.apiService.changePassword(id, updateMap)
+                    .enqueue(object : Callback<User> {
+                        override fun onResponse(call: Call<User>, response: Response<User>) {
+                            if (response.isSuccessful) {
+                                response.body()?.let { updatedUser ->
+                                    SharedPrefHelper.saveUser(this@profile, updatedUser)
+                                    Toast.makeText(this@profile, "Password berhasil diubah", Toast.LENGTH_SHORT).show()
+                                    startActivity(Intent(this@profile, profile::class.java))
+                                    dialog.dismiss() // hanya ditutup jika sukses
+                                }
+                            } else {
+                                val msg = JSONObject(response.errorBody()?.string() ?: "{}")
+                                    .optString("message", "Terjadi kesalahan.")
+                                Toast.makeText(this@profile, msg, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<User>, t: Throwable) {
+                            Toast.makeText(this@profile, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    })
+            }
+        }
+
+        dialog.show()
+
+    }
+
+    private fun togglePasswordVisibility(editText: EditText, icon: ImageView, visible: Boolean) {
+        editText.inputType = if (visible) {
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+        } else {
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
+        icon.setImageResource(if (visible) R.drawable.eye_on else R.drawable.eye_off)
+        editText.setSelection(editText.text.length)
+    }
 
 
     fun openCamera() {
@@ -391,6 +496,45 @@ class profile : AppCompatActivity() {
         cursor?.close()
         return fileName ?: "Unknown"
     }
+
+    private fun uploadProfileImage(uri: Uri) {
+        val inputStream = contentResolver.openInputStream(uri)
+        val fileBytes = inputStream!!.readBytes()
+        val fileName = getFileName(uri) ?: "uploaded_image.jpg"
+
+
+        val requestFile = fileBytes.toRequestBody("image/*".toMediaTypeOrNull())
+        val filePart = MultipartBody.Part.createFormData("file", fileName, requestFile)
+
+        val user = SharedPrefHelper.getUser(this)
+        val userId = user?.username ?: return
+
+        ApiClient.apiService.changeProfile(userId, filePart)
+            .enqueue(object : Callback<User> {
+                override fun onResponse(call: Call<User>, response: Response<User>) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { updatedUser ->
+                            SharedPrefHelper.saveUser(this@profile, updatedUser)
+                            Toast.makeText(this@profile, "Gambar Profile berhasil diubah", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this@profile, profile::class.java))
+                            finish()
+                        }
+                    } else {
+                        val msg = JSONObject(response.errorBody()?.string() ?: "{}")
+                            .optString("message", "Terjadi kesalahan.")
+                        Toast.makeText(this@profile, msg, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<User>, t: Throwable) {
+                    Toast.makeText(this@profile, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+
+    fun String.toPartRequestBody(): RequestBody =
+        this.toRequestBody("text/plain".toMediaTypeOrNull())
 
     fun toRequestBody(value: String): RequestBody =
         value.toRequestBody("text/plain".toMediaTypeOrNull())

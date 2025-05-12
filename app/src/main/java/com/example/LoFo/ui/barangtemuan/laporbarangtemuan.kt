@@ -23,6 +23,7 @@ import com.example.LoFo.R
 import com.example.LoFo.data.api.ApiClient
 import com.example.LoFo.data.model.barangtemuan.BarangTemuanResponse
 import com.example.LoFo.utils.SharedPrefHelper
+import com.yalantis.ucrop.UCrop
 import okhttp3.MultipartBody
 import org.json.JSONObject
 import retrofit2.Call
@@ -42,6 +43,7 @@ class laporbarangtemuan : AppCompatActivity() {
     private lateinit var namaFile: TextView
     val REQUEST_IMAGE_CAPTURE = 1
     private val PICK_IMAGE_REQUEST = 2
+    private val REQUEST_IMAGE_CROP = 3
     private val CAMERA_PERMISSION_CODE = 100
     private var selectedImageUri: Uri? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -207,26 +209,75 @@ class laporbarangtemuan : AppCompatActivity() {
     }
 
 
+    fun selectImage() {
+        val options = arrayOf("Ambil Foto", "Pilih dari Galeri")
+        val builder = android.app.AlertDialog.Builder(this)
+        builder.setTitle("Pilih Sumber Gambar")
+        builder.setItems(options) { _, which ->
+            when (which) {
+                0 -> {
+                    // Memulai kamera
+                    openCamera()
+                }
+                1 -> {
+                    // Memulai galeri
+                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type = "image/*"
+                    startActivityForResult(intent, PICK_IMAGE_REQUEST)
+                }
+            }
+        }
+        builder.show()
+    }
+
+    // Fungsi untuk menangani hasil dari memilih gambar
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == RESULT_OK) {
             when (requestCode) {
                 PICK_IMAGE_REQUEST -> {
-                    selectedImageUri = data?.data
+                    val uri = data?.data
+                    uri?.let { startCrop(it) }
                 }
-                REQUEST_IMAGE_CAPTURE -> {
-                    // URI sudah diset di openCamera
-                    // selectedImageUri sudah berisi file dari kamera
-                }
-            }
 
-            selectedImageUri?.let {
-                val fileName = getFileName(it)
-                namaFile.text = fileName
+                REQUEST_IMAGE_CROP -> {
+                    val resultUri = UCrop.getOutput(data!!)
+                    if (resultUri != null) {
+                        selectedImageUri = resultUri // Simpan URI hasil crop
+
+                        // Tampilkan nama file
+                        val fileName = resultUri.lastPathSegment ?: "gambar_dipilih.jpg"
+                        namaFile.text = fileName
+                    } else {
+                        Toast.makeText(this, "Gagal crop gambar", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                REQUEST_IMAGE_CAPTURE -> {
+                    selectedImageUri?.let {
+                        startCrop(it) // Langsung crop jika dari kamera
+                    }
+                }
             }
         }
     }
+
+
+    // Fungsi untuk memulai UCrop untuk crop gambar dengan rasio 1:1
+    fun startCrop(uri: Uri) {
+        val fileName = "cropped_image_${System.currentTimeMillis()}.jpg"
+        val destinationUri = Uri.fromFile(File(cacheDir, fileName))
+
+        UCrop.of(uri, destinationUri)
+            .withAspectRatio(4f, 3f)
+            .withMaxResultSize(1000, 750)
+            .start(this, REQUEST_IMAGE_CROP)
+    }
+
+
+
+
 
 
     fun openCamera() {

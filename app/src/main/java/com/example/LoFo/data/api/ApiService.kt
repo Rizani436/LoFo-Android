@@ -13,15 +13,15 @@ import com.example.LoFo.data.model.register.RegisterResponse
 import com.example.LoFo.data.model.user.User
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
-import retrofit2.http.PartMap
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -54,7 +54,7 @@ interface ApiService {
     @POST("barang-hilang/create")
     fun createBarangHilang(
         @Part file: MultipartBody.Part,
-        @Part("userId") userId: RequestBody,
+        @Part("userId") userId: RequestBody?,
         @Part("namaBarang") namaBarang: RequestBody,
         @Part("kategoriBarang") kategoriBarang: RequestBody,
         @Part("tempatHilang") tempatTemuan: RequestBody,
@@ -83,12 +83,76 @@ interface ApiService {
     @GET("barang-temuan/getAll")
     suspend fun getAllBarangTemuan( ): List<BarangTemuan>
 
-    @Multipart
     @PUT("user/update/{id}")
     fun updateUser(
         @Path("id") id: String,
-        @PartMap params: Map<String, @JvmSuppressWildcards RequestBody>
+        @Body updateData: Map<String, String> // atau bisa pakai data class kalau field-nya tetap
     ): Call<User>
+
+    @PUT("user/change-password/{id}")
+    fun changePassword(
+        @Path("id") id: String,
+        @Body updateData: Map<String, String> // atau bisa pakai data class kalau field-nya tetap
+    ): Call<User>
+
+    @Multipart
+    @PUT("user/change-profile/{id}")
+    fun changeProfile(
+        @Path("id") id: String,
+        @Part file: MultipartBody.Part,
+    ): Call<User>
+
+
+    @PUT("user/delete-profile/{id}")
+    fun deleteProfile(
+        @Path("id") id: String,
+    ): Call<User>
+
+    @DELETE("barang-hilang/delete/{id}")
+    fun deleteBarangHilang(
+        @Path("id") id: String,
+    ): Call<BarangHilang>
+
+    @DELETE("barang-temuan/delete/{id}")
+    fun deleteBarangTemuan(
+        @Path("id") id: String,
+    ): Call<BarangTemuan>
+
+    @PUT("barang-hilang/update/{id}")
+    fun updateBarangHilang(
+        @Path("id") id: String,
+        @Body body: Map<String, String>
+    ): Call<BarangHilang>
+
+    @PUT("barang-temuan/update/{id}")
+    fun updateBarangTemuan(
+        @Path("id") id: String,
+        @Body body: Map<String, String>
+    ): Call<BarangTemuan>
+
+    @Multipart
+    @PUT("barang-hilang/update-gambar/{id}")
+    fun updateGambarBarangHilang(
+        @Path("id") id: String,
+        @Part file: MultipartBody.Part,
+    ): Call<BarangHilang>
+
+    @Multipart
+    @PUT("barang-temuan/update-gambar/{id}")
+    fun updateGambarBarangTemuan(
+        @Path("id") id: String,
+        @Part file: MultipartBody.Part,
+    ): Call<BarangTemuan>
+
+
+
+
+//    @Multipart
+//    @PUT("user/update/{id}")
+//    fun updateUser(
+//        @Path("id") id: String,
+//        @PartMap params: Map<String, @JvmSuppressWildcards RequestBody>
+//    ): Call<User>
 
 
 

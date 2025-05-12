@@ -23,6 +23,15 @@
         android:theme="@style/Theme.Assign3"
         tools:targetApi="31">
         <activity
+            android:name=".ui.barangtemuan.ubahbarangtemuan"
+            android:exported="false" />
+        <activity
+            android:name=".ui.baranghilang.editbaranghilang"
+            android:exported="false" />
+        <activity
+            android:name=".ui.baranghilang.ubahbaranghilang"
+            android:exported="false" />
+        <activity
             android:name=".ui.profile.profile"
             android:exported="false" />
         <activity
@@ -63,6 +72,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <meta-data
             android:name="preloaded_fonts"

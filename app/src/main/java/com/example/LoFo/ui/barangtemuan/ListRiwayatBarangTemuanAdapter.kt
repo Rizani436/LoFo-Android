@@ -4,11 +4,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.LoFo.R
+import com.example.LoFo.data.api.ApiClient
+import com.example.LoFo.data.model.baranghilang.BarangHilang
 import com.example.LoFo.data.model.barangtemuan.BarangTemuan
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ListRiwayatBarangTemuanAdapter(
     private val listBarang: ArrayList<BarangTemuan>,
@@ -61,18 +69,90 @@ class ListRiwayatBarangTemuanAdapter(
             .into(holder.imgItemPhoto)
 
         holder.buttonHapus.setOnClickListener {
-            onDeleteClick(barang)
+            showDeleteConfirmationDialog(holder.itemView, barang)
         }
 
         holder.buttonUbah.setOnClickListener {
             onEditClick(barang)
         }
         holder.buttonSelesai.setOnClickListener {
-            onSelesaiClick(barang)
+            val context = holder.itemView.context
+
+            AlertDialog.Builder(context)
+                .setTitle("Konfirmasi")
+                .setMessage("Apakah Anda yakin ingin menyelesaikan laporan ini?")
+                .setPositiveButton("Ya") { dialog, _ ->
+                    if (barang.status == "Diterima") {
+                        val updateStatus = mapOf("status" to "Selesai")
+
+                        ApiClient.apiService.updateBarangTemuan(barang.idBarangTemuan, updateStatus)
+                            .enqueue(object : Callback<BarangTemuan> {
+                                override fun onResponse(call: Call<BarangTemuan>, response: Response<BarangTemuan>) {
+                                    if (response.isSuccessful) {
+                                        Toast.makeText(holder.itemView.context, "Status berhasil diubah menjadi Selesai", Toast.LENGTH_SHORT).show()
+                                        barang.status = "Selesai" // update status lokal
+                                        notifyItemChanged(position) // refresh tampilan item
+                                    } else {
+                                        val msg = JSONObject(response.errorBody()?.string() ?: "{}")
+                                            .optString("message", "Gagal mengubah status.")
+                                        Toast.makeText(holder.itemView.context, msg, Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<BarangTemuan>, t: Throwable) {
+                                    Toast.makeText(holder.itemView.context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                                }
+                            })
+                    } else if (barang.status == "Selesai"){
+                        Toast.makeText(context, "Status Barang Sudah Selesai", Toast.LENGTH_SHORT).show()
+                    } else if (barang.status == "Ditolak"){
+                        Toast.makeText(context, "Barang Sudah Ditolak", Toast.LENGTH_SHORT).show()
+                    }
+                    else {
+                        Toast.makeText(context, "Status Barang Harus Diterima Dulu", Toast.LENGTH_SHORT).show()
+                    }
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Batal") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
         }
         holder.buttonLaporan.setOnClickListener {
             onLaporanClick(barang)
         }
+    }
+    private fun showDeleteConfirmationDialog(itemView: View, barang: BarangTemuan) {
+        MaterialAlertDialogBuilder(itemView.context)
+            .setTitle("Konfirmasi Penghapusan")
+            .setMessage("Apakah kamu yakin ingin menghapus barang ini?")
+            .setPositiveButton("Ya") { dialog, _ ->
+                deleteBarang(itemView, barang)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Batal") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+    private fun deleteBarang(itemView: View, barang: BarangTemuan) {
+        ApiClient.apiService.deleteBarangTemuan(barang.idBarangTemuan)
+            .enqueue(object : Callback<BarangTemuan> {
+                override fun onResponse(call: Call<BarangTemuan>, response: Response<BarangTemuan>) {
+                    if (response.isSuccessful) {
+
+                        onDeleteClick(barang) // Untuk memberitahu adapter/data diperbarui
+                    } else {
+                        val msg = JSONObject(response.errorBody()?.string() ?: "{}")
+                            .optString("message", "Terjadi kesalahan.")
+                        Toast.makeText(itemView.context, msg, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<BarangTemuan>, t: Throwable) {
+                    Toast.makeText(itemView.context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
     override fun getItemCount(): Int = listBarang.size

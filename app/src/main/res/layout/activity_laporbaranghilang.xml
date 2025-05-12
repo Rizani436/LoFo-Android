@@ -60,7 +60,7 @@
             android:background="@drawable/rounded_edittext"
             android:padding="12dp"
             android:hint="@string/masukkan_namaBarang"
-            android:textSize="16sp"
+            android:textSize="16dp"
             android:layout_marginBottom="5dp"
             >
         </EditText>
@@ -131,7 +131,7 @@
             android:background="@drawable/rounded_edittext"
             android:padding="12dp"
             android:hint="@string/masukkan_tempatKehilangan"
-            android:textSize="16sp"
+            android:textSize="16dp"
             android:layout_marginBottom="5dp"
             >
         </EditText>
@@ -175,7 +175,7 @@
             android:background="@drawable/rounded_edittext"
             android:padding="12dp"
             android:hint="@string/masukkan_informasiDetail"
-            android:textSize="16sp"
+            android:textSize="16dp"
             android:layout_marginBottom="5dp"
             >
         </EditText>
@@ -201,7 +201,7 @@
             android:hint="@string/masukkan_nomor_handphone"
             android:inputType="phone"
             android:digits="0123456789"
-            android:textSize="16sp"
+            android:textSize="16dp"
             android:layout_marginBottom="5dp"
             >
         </EditText>

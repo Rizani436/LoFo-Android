@@ -4,13 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.LoFo.MainActivity
 import com.example.LoFo.R
 import com.example.LoFo.adapter.ListRiwayatBarangTemuanAdapter
+import com.example.LoFo.data.api.ApiClient
 import com.example.LoFo.data.model.barangtemuan.BarangTemuan
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class riwayatbarangtemuan : AppCompatActivity() {
 
@@ -23,9 +28,10 @@ class riwayatbarangtemuan : AppCompatActivity() {
         setContentView(R.layout.activity_riwayatbarangtemuan)
 
         val kategori = intent.getStringExtra("kategori")
-        val listBarang = intent.getParcelableArrayListExtra<BarangTemuan>("dataBarang") ?: arrayListOf()
+        listBarang.clear()
+        listBarang.addAll(intent.getParcelableArrayListExtra<BarangTemuan>("dataBarang") ?: arrayListOf())
 
-        var buttonBack : ImageView = findViewById<ImageView>(R.id.back)
+        val buttonBack : ImageView = findViewById<ImageView>(R.id.back)
         buttonBack.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -37,21 +43,55 @@ class riwayatbarangtemuan : AppCompatActivity() {
         adapter = ListRiwayatBarangTemuanAdapter(
             listBarang,
             onDeleteClick = { barangTemuan ->
-                // Tindakan yang akan dilakukan saat tombol hapus diklik
-                Toast.makeText(this, "Hapus ${barangTemuan.namaBarang}", Toast.LENGTH_SHORT).show()
+                val index = listBarang.indexOfFirst { it.idBarangTemuan == barangTemuan.idBarangTemuan }
+                if (index != -1) {
+                    listBarang.removeAt(index)
+                    adapter.notifyItemRemoved(index)
+                    Toast.makeText(this, "Berhasil menghapus ${barangTemuan.namaBarang}", Toast.LENGTH_SHORT).show()
+                }
             },
             onEditClick = { barangTemuan ->
-                // Tindakan yang akan dilakukan saat tombol ubah diklik
-                Toast.makeText(this, "Ubah ${barangTemuan.namaBarang}", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this@riwayatbarangtemuan, ubahbarangtemuan::class.java)
+                intent.putExtra("barang", barangTemuan) // Kirim barang yang diklik
+                startActivity(intent)
             },
             onLaporanClick = { barangTemuan ->
-                // Tindakan yang akan dilakukan saat tombol perbarui status diklik
-                Toast.makeText(this, "Perbarui status ${barangTemuan.namaBarang} ke Selesai", Toast.LENGTH_SHORT).show()
+
             },
-            onSelesaiClick = { barangTemuan ->
-                // Tindakan yang akan dilakukan saat tombol perbarui status diklik
-                Toast.makeText(this, "Perbarui status ${barangTemuan.namaBarang} ke Selesai", Toast.LENGTH_SHORT).show()
+            onSelesaiClick = { barang ->
+                if (barang.status == "Diterima") {
+                    AlertDialog.Builder(this)
+                        .setTitle("Konfirmasi")
+                        .setMessage("Apakah Anda yakin ingin menyelesaikan laporan ini?")
+                        .setPositiveButton("Ya") { _, _ ->
+                            // API call PATCH untuk update status
+                            val updateMap = mapOf("status" to "Selesai")
+
+                            ApiClient.apiService.updateBarangTemuan(barang.idBarangTemuan, updateMap)
+                                .enqueue(object : Callback<BarangTemuan> {
+                                    override fun onResponse(call: Call<BarangTemuan>, response: Response<BarangTemuan>) {
+                                        if (response.isSuccessful) {
+                                            // Update data di list dan refresh UI
+                                            barang.status = "Selesai"
+                                            adapter.notifyDataSetChanged()
+                                            Toast.makeText(this@riwayatbarangtemuan, "Status berhasil diperbarui", Toast.LENGTH_SHORT).show()
+                                        } else {
+                                            Toast.makeText(this@riwayatbarangtemuan, "Gagal memperbarui status", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+
+                                    override fun onFailure(call: Call<BarangTemuan>, t: Throwable) {
+                                        Toast.makeText(this@riwayatbarangtemuan, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                })
+                        }
+                        .setNegativeButton("Batal", null)
+                        .show()
+                } else {
+                    Toast.makeText(this, "Status hanya bisa diubah jika sekarang 'Diterima'", Toast.LENGTH_SHORT).show()
+                }
             }
+
         )
 
         recyclerView.adapter = adapter

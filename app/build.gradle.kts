@@ -12,6 +12,7 @@ android {
     namespace = "com.example.LoFo"
     compileSdk = 35
 
+
     defaultConfig {
         applicationId = "com.example.LoFo"
         minSdk = 24
@@ -60,6 +61,9 @@ dependencies {
     implementation(libs.glide)
     kapt(libs.glide.compiler)
     implementation(libs.circleimageview)
+    implementation ("com.github.yalantis:ucrop:2.2.6")
+
+
 
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
@@ -82,3 +86,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+
+
