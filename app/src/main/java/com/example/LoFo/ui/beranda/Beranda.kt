@@ -49,7 +49,6 @@ class Beranda : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.navigation_view)
 
-        // Toggle drawer
         val toggle = androidx.appcompat.app.ActionBarDrawerToggle(
             this, drawerLayout, toolbar,
             R.string.navigation_drawer_open,
@@ -58,19 +57,17 @@ class Beranda : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // Icon notifikasi
         val notificationIcon: ImageView = findViewById(R.id.notification_icon)
         notificationIcon.setOnClickListener {
             Toast.makeText(this, "Notifikasi diklik!", Toast.LENGTH_SHORT).show()
         }
 
-        // Gambar profil di header
         val headerView = navView.getHeaderView(0)
         val imageProfile = headerView.findViewById<ImageView>(R.id.image_profile)
         Glide.with(this)
             .load(imageUrl)
-            .placeholder(R.drawable.profile_picture) // opsional, untuk gambar loading
-            .error(R.drawable.profile_picture)           // opsional, untuk gambar gagal load
+            .placeholder(R.drawable.profile_picture)
+            .error(R.drawable.profile_picture)
             .into(imageProfile)
         val user_name = headerView.findViewById<TextView>(R.id.user_name)
         user_name.text = user?.username
@@ -78,7 +75,6 @@ class Beranda : AppCompatActivity() {
 
         }
 
-        // Navigasi drawer klik
         navView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_daftar -> {
@@ -246,89 +242,6 @@ class Beranda : AppCompatActivity() {
             .show()
     }
 
-    private fun showSubmenuDialogLogout(title: String, items: List<String>, kategori: String, user: User?) {
-        val username = user?.username
-        val itemsArray = items.toTypedArray()
-        AlertDialog.Builder(this)
-            .setTitle(title)
-            .setItems(itemsArray) { _, which ->
-                val selected = items[which]
-                if (selected == "Barang Hilang") {
-                    if (title == "Daftar Laporan" || kategoriArray.contains(title)) {
-                        lifecycleScope.launch {
-                            try {
-                                val response = ApiClient.apiService.getOtherAllBarangHilang(username.toString(), kategori.toString())
-                                val intent = Intent(this@Beranda, daftarbaranghilang::class.java)
-                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
-                                startActivity(intent)
-
-                            } catch (e: Exception) {
-                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-
-                    } else if (title == "Riwayat Laporan") {
-
-                        lifecycleScope.launch {
-                            try {
-                                val response = ApiClient.apiService.getMyAllBarangHilang(username.toString())
-                                val intent = Intent(this@Beranda, riwayatbaranghilang::class.java)
-                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
-                                startActivity(intent)
-
-                            } catch (e: Exception) {
-                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-
-                    }else if (title == "Lapor") {
-                        val intent = Intent(this, laporbaranghilang::class.java)
-                        startActivity(intent)
-                    } else {
-                        null
-                    }
-                } else if (selected == "Barang Temuan") {
-                    if (title == "Daftar Laporan"|| kategoriArray.contains(title)) {
-                        lifecycleScope.launch {
-                            try {
-                                val response = ApiClient.apiService.getOtherAllBarangTemuan(username.toString(), kategori.toString())
-                                val intent = Intent(this@Beranda, daftarbarangtemuan::class.java)
-                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
-                                startActivity(intent)
-
-                            } catch (e: Exception) {
-                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-
-                    } else if (title == "Riwayat Laporan") {
-                        lifecycleScope.launch {
-                            try {
-                                val response = ApiClient.apiService.getMyAllBarangTemuan(username.toString())
-                                val intent = Intent(this@Beranda, riwayatbarangtemuan::class.java)
-                                intent.putParcelableArrayListExtra("dataBarang", ArrayList(response))
-                                startActivity(intent)
-
-                            } catch (e: Exception) {
-                                Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-
-                    }else if (title == "Lapor") {
-                        val intent = Intent(this, laporbarangtemuan::class.java)
-                        startActivity(intent)
-                    } else {
-                        null
-                    }
-                } else {
-                    null
-                }
-
-            }
-            .show()
-    }
-
-
     private fun performLogout() {
         val token = SharedPrefHelper.getToken(this)
         val request = LogoutRequest(token.toString())
@@ -353,7 +266,4 @@ class Beranda : AppCompatActivity() {
             }
         })
     }
-
-    fun toRequestBody(value: String): RequestBody =
-        value.toRequestBody("text/plain".toMediaTypeOrNull())
 }

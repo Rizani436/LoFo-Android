@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.LoFo.R
 import com.example.LoFo.data.api.ApiClient
-import com.example.LoFo.data.model.baranghilang.BarangHilang
 import com.example.LoFo.data.model.barangtemuan.BarangTemuan
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -52,7 +51,6 @@ class ListRiwayatBarangTemuanAdapter(
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val barang = listBarang[position]
 
-        // Bind data ke UI
         holder.namaBarang.text = barang.namaBarang
         holder.kategoriBarang.text = barang.kategoriBarang
         holder.tanggalTemuan.text = barang.tanggalTemuan
@@ -62,7 +60,6 @@ class ListRiwayatBarangTemuanAdapter(
         holder.noHP.text = barang.noHP
         holder.status.text = barang.status
 
-        // Load gambar jika diperlukan
         Glide.with(holder.itemView.context)
             .load(barang.pictUrl)
             .placeholder(R.drawable.placeholder)
@@ -90,8 +87,8 @@ class ListRiwayatBarangTemuanAdapter(
                                 override fun onResponse(call: Call<BarangTemuan>, response: Response<BarangTemuan>) {
                                     if (response.isSuccessful) {
                                         Toast.makeText(holder.itemView.context, "Status berhasil diubah menjadi Selesai", Toast.LENGTH_SHORT).show()
-                                        barang.status = "Selesai" // update status lokal
-                                        notifyItemChanged(position) // refresh tampilan item
+                                        barang.status = "Selesai"
+                                        notifyItemChanged(position)
                                     } else {
                                         val msg = JSONObject(response.errorBody()?.string() ?: "{}")
                                             .optString("message", "Gagal mengubah status.")
@@ -141,7 +138,7 @@ class ListRiwayatBarangTemuanAdapter(
                 override fun onResponse(call: Call<BarangTemuan>, response: Response<BarangTemuan>) {
                     if (response.isSuccessful) {
 
-                        onDeleteClick(barang) // Untuk memberitahu adapter/data diperbarui
+                        onDeleteClick(barang)
                     } else {
                         val msg = JSONObject(response.errorBody()?.string() ?: "{}")
                             .optString("message", "Terjadi kesalahan.")

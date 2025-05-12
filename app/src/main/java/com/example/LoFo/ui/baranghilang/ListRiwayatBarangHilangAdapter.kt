@@ -1,6 +1,5 @@
 package com.example.LoFo.adapter
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +10,6 @@ import com.bumptech.glide.Glide
 import com.example.LoFo.R
 import com.example.LoFo.data.api.ApiClient
 import com.example.LoFo.data.model.baranghilang.BarangHilang
-import com.example.LoFo.data.model.user.User
-import com.example.LoFo.ui.profile.profile
-import com.example.LoFo.utils.SharedPrefHelper
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONObject
@@ -63,7 +59,6 @@ class ListRiwayatBarangHilangAdapter(
         holder.noHP.text = barang.noHP
         holder.status.text = barang.status
 
-        // Load gambar jika diperlukan
         Glide.with(holder.itemView.context)
             .load(barang.pictUrl)
             .placeholder(R.drawable.placeholder)
@@ -72,8 +67,6 @@ class ListRiwayatBarangHilangAdapter(
         holder.buttonHapus.setOnClickListener {
             showDeleteConfirmationDialog(holder.itemView, barang)
         }
-
-
         holder.buttonUbah.setOnClickListener {
             onEditClick(barang)
         }

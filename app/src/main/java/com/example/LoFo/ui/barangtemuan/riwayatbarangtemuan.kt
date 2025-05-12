@@ -39,7 +39,6 @@ class riwayatbarangtemuan : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewBarang)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Menambahkan lambdas untuk parameter onDeleteClick, onEditClick, dan onStatusUpdateClick
         adapter = ListRiwayatBarangTemuanAdapter(
             listBarang,
             onDeleteClick = { barangTemuan ->
@@ -52,7 +51,7 @@ class riwayatbarangtemuan : AppCompatActivity() {
             },
             onEditClick = { barangTemuan ->
                 val intent = Intent(this@riwayatbarangtemuan, ubahbarangtemuan::class.java)
-                intent.putExtra("barang", barangTemuan) // Kirim barang yang diklik
+                intent.putExtra("barang", barangTemuan)
                 startActivity(intent)
             },
             onLaporanClick = { barangTemuan ->
@@ -64,14 +63,12 @@ class riwayatbarangtemuan : AppCompatActivity() {
                         .setTitle("Konfirmasi")
                         .setMessage("Apakah Anda yakin ingin menyelesaikan laporan ini?")
                         .setPositiveButton("Ya") { _, _ ->
-                            // API call PATCH untuk update status
                             val updateMap = mapOf("status" to "Selesai")
 
                             ApiClient.apiService.updateBarangTemuan(barang.idBarangTemuan, updateMap)
                                 .enqueue(object : Callback<BarangTemuan> {
                                     override fun onResponse(call: Call<BarangTemuan>, response: Response<BarangTemuan>) {
                                         if (response.isSuccessful) {
-                                            // Update data di list dan refresh UI
                                             barang.status = "Selesai"
                                             adapter.notifyDataSetChanged()
                                             Toast.makeText(this@riwayatbarangtemuan, "Status berhasil diperbarui", Toast.LENGTH_SHORT).show()

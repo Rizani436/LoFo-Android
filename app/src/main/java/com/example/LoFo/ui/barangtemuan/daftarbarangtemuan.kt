@@ -16,13 +16,11 @@ class daftarbarangtemuan : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ListDaftarBarangTemuanAdapter
-    private val listBarang = ArrayList<BarangTemuan>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_daftarbarangtemuan)
 
-        val kategori = intent.getStringExtra("kategori")
         val listBarang = intent.getParcelableArrayListExtra<BarangTemuan>("dataBarang") ?: arrayListOf()
 
         var buttonBack : ImageView = findViewById<ImageView>(R.id.back)
@@ -33,11 +31,9 @@ class daftarbarangtemuan : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewBarang)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Menambahkan lambdas untuk parameter onDeleteClick, onEditClick, dan onStatusUpdateClick
         adapter = ListDaftarBarangTemuanAdapter(
             listBarang,
             onKlaimClick = { barangTemuan ->
-                // Tindakan yang akan dilakukan saat tombol hapus diklik
                 Toast.makeText(this, "Klaim ${barangTemuan.namaBarang}", Toast.LENGTH_SHORT).show()
             }
         )

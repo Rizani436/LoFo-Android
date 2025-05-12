@@ -1,6 +1,5 @@
 package com.example.LoFo.ui.profile
 
-import android.R.attr.id
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -11,7 +10,6 @@ import android.provider.OpenableColumns
 import android.text.InputType
 import android.util.Patterns
 import android.view.LayoutInflater
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -21,26 +19,13 @@ import com.bumptech.glide.Glide
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.lifecycleScope
 import com.example.LoFo.MainActivity
 import com.example.LoFo.R
 import com.example.LoFo.data.api.ApiClient
-import com.example.LoFo.data.api.ApiClient.apiService
-import com.example.LoFo.data.model.login.LoginResponse
-import com.example.LoFo.data.model.logout.LogoutRequest
-import com.example.LoFo.data.model.logout.LogoutResponse
 import com.example.LoFo.data.model.user.User
-import com.example.LoFo.ui.baranghilang.*
-import com.example.LoFo.ui.barangtemuan.*
-import com.example.LoFo.ui.beranda.Beranda
 import com.example.LoFo.utils.SharedPrefHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.navigation.NavigationView
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -53,14 +38,8 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import retrofit2.*
 import android.util.Log
 import com.yalantis.ucrop.UCrop
-
-
-import com.example.LoFo.ui.login.login
-
-import kotlin.collections.contains
 
 class profile : AppCompatActivity() {
     private lateinit var pilihGambarButton: RelativeLayout
@@ -77,9 +56,6 @@ class profile : AppCompatActivity() {
         val userId = user?.username ?: return
         val imageUrl = user.pictUrl
 
-
-
-
         val username = findViewById<TextView>(R.id.username)
         username.text = user?.username
         val email = findViewById<TextView>(R.id.email)
@@ -95,8 +71,8 @@ class profile : AppCompatActivity() {
         val imageView = findViewById<ImageView>(R.id.image_profile)
         Glide.with(this)
             .load(imageUrl)
-            .placeholder(R.drawable.profile_picture) // opsional, untuk gambar loading
-            .error(R.drawable.profile_picture)           // opsional, untuk gambar gagal load
+            .placeholder(R.drawable.profile_picture)
+            .error(R.drawable.profile_picture)
             .into(imageView)
 
         pilihGambarButton = findViewById(R.id.pilihGambarButton)
@@ -194,28 +170,7 @@ class profile : AppCompatActivity() {
 
 
     }
-    fun selectImage() {
-        val options = arrayOf("Ambil Foto", "Pilih dari Galeri")
-        val builder = android.app.AlertDialog.Builder(this)
-        builder.setTitle("Pilih Sumber Gambar")
-        builder.setItems(options) { _, which ->
-            when (which) {
-                0 -> {
-                    // Memulai kamera
-                    openCamera()
-                }
-                1 -> {
-                    // Memulai galeri
-                    val intent = Intent(Intent.ACTION_GET_CONTENT)
-                    intent.type = "image/*"
-                    startActivityForResult(intent, PICK_IMAGE_REQUEST)
-                }
-            }
-        }
-        builder.show()
-    }
 
-    // Fungsi untuk menangani hasil dari memilih gambar
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -234,7 +189,6 @@ class profile : AppCompatActivity() {
                         val imageView = findViewById<ImageView>(R.id.image_profile)
                         Glide.with(this).load(resultUri).into(imageView)
 
-                        // ✅ Upload gambar hasil crop ke server
                         uploadProfileImage(resultUri)
                     } else {
                         Toast.makeText(this, "Gagal crop gambar", Toast.LENGTH_SHORT).show()
@@ -243,22 +197,19 @@ class profile : AppCompatActivity() {
 
                 REQUEST_IMAGE_CAPTURE -> {
                     selectedImageUri?.let {
-                        startCrop(it) // Jika dari kamera, langsung crop juga
+                        startCrop(it)
                     }
                 }
             }
         }
     }
 
-    // Fungsi untuk memulai UCrop untuk crop gambar dengan rasio 1:1
     fun startCrop(uri: Uri) {
-        // Tentukan lokasi tujuan untuk gambar yang sudah dicrop
         val destinationUri = Uri.fromFile(File(cacheDir, "cropped_image.jpg"))
 
-        // Memulai UCrop dengan rasio 1:1
         UCrop.of(uri, destinationUri)
-            .withAspectRatio(1f, 1f)  // Menetapkan rasio 1:1
-            .withMaxResultSize(500, 500)  // Menetapkan ukuran maksimal hasil crop
+            .withAspectRatio(1f, 1f)
+            .withMaxResultSize(500, 500)
             .start(this, REQUEST_IMAGE_CROP)
     }
 
@@ -378,7 +329,7 @@ class profile : AppCompatActivity() {
 
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(view)
-            .setPositiveButton("Simpan", null) // null agar tidak auto-dismiss
+            .setPositiveButton("Simpan", null)
             .setNegativeButton("Batal", null)
             .create()
 
@@ -413,7 +364,7 @@ class profile : AppCompatActivity() {
                                     SharedPrefHelper.saveUser(this@profile, updatedUser)
                                     Toast.makeText(this@profile, "Password berhasil diubah", Toast.LENGTH_SHORT).show()
                                     startActivity(Intent(this@profile, profile::class.java))
-                                    dialog.dismiss() // hanya ditutup jika sukses
+                                    dialog.dismiss()
                                 }
                             } else {
                                 val msg = JSONObject(response.errorBody()?.string() ?: "{}")
@@ -487,7 +438,6 @@ class profile : AppCompatActivity() {
         }
     }
 
-    // Fungsi untuk mendapatkan nama file dari URI
     private fun getFileName(uri: Uri): String {
         val cursor = contentResolver.query(uri, null, null, null, null)
         cursor?.moveToFirst()
@@ -532,10 +482,4 @@ class profile : AppCompatActivity() {
             })
     }
 
-
-    fun String.toPartRequestBody(): RequestBody =
-        this.toRequestBody("text/plain".toMediaTypeOrNull())
-
-    fun toRequestBody(value: String): RequestBody =
-        value.toRequestBody("text/plain".toMediaTypeOrNull())
 }

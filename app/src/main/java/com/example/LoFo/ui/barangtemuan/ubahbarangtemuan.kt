@@ -8,13 +8,11 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.OpenableColumns
-import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
-import com.example.LoFo.MainActivity
 import com.example.LoFo.R
 import com.example.LoFo.data.api.ApiClient
 import com.yalantis.ucrop.UCrop
@@ -33,17 +31,12 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.example.LoFo.data.model.barangtemuan.BarangTemuan
-import com.example.LoFo.data.model.user.User
-import com.example.LoFo.ui.beranda.Beranda
-import com.example.LoFo.ui.profile.profile
 import com.example.LoFo.utils.SharedPrefHelper
 import kotlinx.coroutines.launch
 
 class ubahbarangtemuan : AppCompatActivity() {
-    private lateinit var namaFile: TextView
     val REQUEST_IMAGE_CAPTURE = 1
     private val PICK_IMAGE_REQUEST = 2
     private val REQUEST_IMAGE_CROP = 3
@@ -55,7 +48,6 @@ class ubahbarangtemuan : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ubahbarangtemuan)
 
-        val  userId = intent.getStringExtra("userId")
         imgItemPhoto = findViewById(R.id.img_item_photo)
         val namaBarang = findViewById<EditText>(R.id.namaBarang)
         val kategoriBarang = findViewById<Spinner>(R.id.kategoriBarang)
@@ -99,19 +91,16 @@ class ubahbarangtemuan : AppCompatActivity() {
             datePicker.show()
         }
 
-        // Setup spinner kategori
         val kategoriOptions = resources.getStringArray(R.array.kategori_barang)
         val adapterKategori = ArrayAdapter(this, android.R.layout.simple_spinner_item, kategoriOptions)
         adapterKategori.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         kategoriBarang.adapter = adapterKategori
 
-        // Setup spinner kota/kabupaten
         val kotaOptions = resources.getStringArray(R.array.kota_kabupaten)
         val adapterKota = ArrayAdapter(this, android.R.layout.simple_spinner_item, kotaOptions)
         adapterKota.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         kotaKabupaten.adapter = adapterKota
 
-        // Ambil data dari intent
         barang = intent.getParcelableExtra<BarangTemuan>("barang")!!
         barang?.let {
             namaBarang.setText(it.namaBarang)
@@ -120,7 +109,6 @@ class ubahbarangtemuan : AppCompatActivity() {
             nomorHandphone.setText(it.noHP)
             tanggalTemuan.setText(it.tanggalTemuan)
 
-            // Set pilihan spinner sesuai nilai barang
             val kategoriIndex = kategoriOptions.indexOf(it.kategoriBarang)
             if (kategoriIndex != -1) kategoriBarang.setSelection(kategoriIndex)
 
@@ -161,7 +149,6 @@ class ubahbarangtemuan : AppCompatActivity() {
 
         }
 
-
         buttonBack.setOnClickListener {
             val user = SharedPrefHelper.getUser(this)
             val username = user?.username
@@ -178,28 +165,7 @@ class ubahbarangtemuan : AppCompatActivity() {
             }
         }
     }
-    fun selectImage() {
-        val options = arrayOf("Ambil Foto", "Pilih dari Galeri")
-        val builder = android.app.AlertDialog.Builder(this)
-        builder.setTitle("Pilih Sumber Gambar")
-        builder.setItems(options) { _, which ->
-            when (which) {
-                0 -> {
-                    // Memulai kamera
-                    openCamera()
-                }
-                1 -> {
-                    // Memulai galeri
-                    val intent = Intent(Intent.ACTION_GET_CONTENT)
-                    intent.type = "image/*"
-                    startActivityForResult(intent, PICK_IMAGE_REQUEST)
-                }
-            }
-        }
-        builder.show()
-    }
 
-    // Fungsi untuk menangani hasil dari memilih gambar
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -218,7 +184,6 @@ class ubahbarangtemuan : AppCompatActivity() {
                         val imageView = findViewById<ImageView>(R.id.img_item_photo)
                         Glide.with(this).load(resultUri).into(imageView)
 
-                        // ✅ Upload gambar hasil crop ke server
                         uploadProfileImage(resultUri)
                     } else {
                         Toast.makeText(this, "Gagal crop gambar", Toast.LENGTH_SHORT).show()
@@ -227,22 +192,19 @@ class ubahbarangtemuan : AppCompatActivity() {
 
                 REQUEST_IMAGE_CAPTURE -> {
                     selectedImageUri?.let {
-                        startCrop(it) // Jika dari kamera, langsung crop juga
+                        startCrop(it)
                     }
                 }
             }
         }
     }
 
-    // Fungsi untuk memulai UCrop untuk crop gambar dengan rasio 1:1
     fun startCrop(uri: Uri) {
-        // Tentukan lokasi tujuan untuk gambar yang sudah dicrop
         val destinationUri = Uri.fromFile(File(cacheDir, "cropped_image.jpg"))
 
-        // Memulai UCrop dengan rasio 1:1
         UCrop.of(uri, destinationUri)
-            .withAspectRatio(4f, 3f)  // Menetapkan rasio 1:1
-            .withMaxResultSize(1000, 750)  // Menetapkan ukuran maksimal hasil crop
+            .withAspectRatio(4f, 3f)
+            .withMaxResultSize(1000, 750)
             .start(this, REQUEST_IMAGE_CROP)
     }
     fun openCamera() {
@@ -288,7 +250,6 @@ class ubahbarangtemuan : AppCompatActivity() {
         }
     }
 
-    // Fungsi untuk mendapatkan nama file dari URI
     private fun getFileName(uri: Uri): String {
         val cursor = contentResolver.query(uri, null, null, null, null)
         cursor?.moveToFirst()
@@ -330,15 +291,7 @@ class ubahbarangtemuan : AppCompatActivity() {
                 }
             })
     }
-
-
-    fun String.toRequestBody() =
-        RequestBody.create("text/plain".toMediaTypeOrNull(), this)
-
-    fun createFilePart(file: File): MultipartBody.Part {
-        val reqFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-        return MultipartBody.Part.createFormData("file", file.name, reqFile)
-    }
+    
 }
 
 

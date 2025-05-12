@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.LoFo.R
 import com.example.LoFo.data.model.baranghilang.BarangHilang
-import com.google.android.material.button.MaterialButton
 
 class ListDaftarBarangHilangAdapter(
     private val listBarang: ArrayList<BarangHilang>,
@@ -36,7 +35,6 @@ class ListDaftarBarangHilangAdapter(
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val barang = listBarang[position]
 
-        // Bind data ke UI
         holder.username.text = barang.uploader
         holder.namaBarang.text = barang.namaBarang
         holder.kategoriBarang.text = barang.kategoriBarang
@@ -46,7 +44,6 @@ class ListDaftarBarangHilangAdapter(
         holder.informasiDetail.text = barang.informasiDetail
         holder.noHP.text = barang.noHP
 
-        // Load gambar jika diperlukan
         Glide.with(holder.itemView.context)
             .load(barang.pictUrl)
             .placeholder(R.drawable.placeholder)

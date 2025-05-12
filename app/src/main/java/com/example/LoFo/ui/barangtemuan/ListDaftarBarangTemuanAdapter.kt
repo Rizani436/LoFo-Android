@@ -36,7 +36,6 @@ class ListDaftarBarangTemuanAdapter(
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val barang = listBarang[position]
 
-        // Bind data ke UI
         holder.username.text = barang.uploader
         holder.namaBarang.text = barang.namaBarang
         holder.kategoriBarang.text = barang.kategoriBarang
@@ -44,7 +43,6 @@ class ListDaftarBarangTemuanAdapter(
         holder.tempatTemuan.text = barang.tempatTemuan
         holder.kotaKabupaten.text = barang.kotaKabupaten
 
-        // Load gambar jika diperlukan
         Glide.with(holder.itemView.context)
             .load(barang.pictUrl)
             .placeholder(R.drawable.placeholder)

@@ -13,7 +13,6 @@ import com.example.LoFo.R
 import com.example.LoFo.adapter.ListRiwayatBarangHilangAdapter
 import com.example.LoFo.data.api.ApiClient
 import com.example.LoFo.data.model.baranghilang.BarangHilang
-import com.example.LoFo.ui.beranda.Beranda
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,7 +27,6 @@ class riwayatbaranghilang : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_riwayatbaranghilang)
 
-        val kategori = intent.getStringExtra("kategori")
         listBarang.clear()
         listBarang.addAll(intent.getParcelableArrayListExtra<BarangHilang>("dataBarang") ?: arrayListOf())
 
@@ -53,7 +51,7 @@ class riwayatbaranghilang : AppCompatActivity() {
             },
             onEditClick = { barangHilang ->
                 val intent = Intent(this@riwayatbaranghilang, ubahbaranghilang::class.java)
-                intent.putExtra("barang", barangHilang) // Kirim barang yang diklik
+                intent.putExtra("barang", barangHilang)
                 startActivity(intent)
             },
             onSelesaiClick = { barang ->

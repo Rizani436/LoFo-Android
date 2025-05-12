@@ -1,6 +1,5 @@
 package com.example.LoFo.ui.barangtemuan
 
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -50,7 +49,6 @@ class laporbarangtemuan : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_laporbarangtemuan)
         val user = SharedPrefHelper.getUser(this)
-        val kategori = intent.getStringExtra("kategori")
 
         var namaBarang = findViewById<EditText>(R.id.namaBarang)
         var kategoriBarang = findViewById<Spinner>(R.id.kategoriBarang)
@@ -58,14 +56,12 @@ class laporbarangtemuan : AppCompatActivity() {
         val adapterKetegori = ArrayAdapter(this, android.R.layout.simple_spinner_item, kategoriOptions)
         adapterKetegori.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         kategoriBarang.adapter = adapterKetegori
-        val selectedKategori = kategoriBarang.selectedItem.toString()
         val tempatPenemuan = findViewById<EditText>(R.id.tempatPenemuan)
         var kotaKabupaten = findViewById<Spinner>(R.id.kotaKabupaten)
         val kotaKabupatenOptions = resources.getStringArray(R.array.kota_kabupaten)
         val adapterKotaKabupaten = ArrayAdapter(this, android.R.layout.simple_spinner_item, kotaKabupatenOptions)
         adapterKotaKabupaten.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         kotaKabupaten.adapter = adapterKotaKabupaten
-        val selectedKotaKabupaten = kotaKabupaten.selectedItem.toString()
         var pertanyaan = findViewById<EditText>(R.id.pertanyaan)
         var nomorHandphone = findViewById<EditText>(R.id.nomorHandphone)
         var buttonRegister : Button = findViewById<Button>(R.id.daftar)
@@ -184,7 +180,6 @@ class laporbarangtemuan : AppCompatActivity() {
             ).enqueue(object : Callback<BarangTemuanResponse> {
                 override fun onResponse(call: Call<BarangTemuanResponse>, response: Response<BarangTemuanResponse>) {
                     if (response.isSuccessful) {
-                        val barangTemuanResponse = response.body()
                         Toast.makeText(this@laporbarangtemuan, "Laporan berhasil dikirim!", Toast.LENGTH_SHORT).show()
                         val intent = Intent(this@laporbarangtemuan, MainActivity::class.java)
                         startActivity(intent)
@@ -208,29 +203,6 @@ class laporbarangtemuan : AppCompatActivity() {
 
     }
 
-
-    fun selectImage() {
-        val options = arrayOf("Ambil Foto", "Pilih dari Galeri")
-        val builder = android.app.AlertDialog.Builder(this)
-        builder.setTitle("Pilih Sumber Gambar")
-        builder.setItems(options) { _, which ->
-            when (which) {
-                0 -> {
-                    // Memulai kamera
-                    openCamera()
-                }
-                1 -> {
-                    // Memulai galeri
-                    val intent = Intent(Intent.ACTION_GET_CONTENT)
-                    intent.type = "image/*"
-                    startActivityForResult(intent, PICK_IMAGE_REQUEST)
-                }
-            }
-        }
-        builder.show()
-    }
-
-    // Fungsi untuk menangani hasil dari memilih gambar
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -244,9 +216,8 @@ class laporbarangtemuan : AppCompatActivity() {
                 REQUEST_IMAGE_CROP -> {
                     val resultUri = UCrop.getOutput(data!!)
                     if (resultUri != null) {
-                        selectedImageUri = resultUri // Simpan URI hasil crop
+                        selectedImageUri = resultUri
 
-                        // Tampilkan nama file
                         val fileName = resultUri.lastPathSegment ?: "gambar_dipilih.jpg"
                         namaFile.text = fileName
                     } else {
@@ -256,15 +227,13 @@ class laporbarangtemuan : AppCompatActivity() {
 
                 REQUEST_IMAGE_CAPTURE -> {
                     selectedImageUri?.let {
-                        startCrop(it) // Langsung crop jika dari kamera
+                        startCrop(it)
                     }
                 }
             }
         }
     }
 
-
-    // Fungsi untuk memulai UCrop untuk crop gambar dengan rasio 1:1
     fun startCrop(uri: Uri) {
         val fileName = "cropped_image_${System.currentTimeMillis()}.jpg"
         val destinationUri = Uri.fromFile(File(cacheDir, fileName))
@@ -274,11 +243,6 @@ class laporbarangtemuan : AppCompatActivity() {
             .withMaxResultSize(1000, 750)
             .start(this, REQUEST_IMAGE_CROP)
     }
-
-
-
-
-
 
     fun openCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -307,16 +271,12 @@ class laporbarangtemuan : AppCompatActivity() {
         }
     }
 
-
-
     fun createImageFile(): File {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir)
     }
 
-
-    // Fungsi untuk mendapatkan nama file dari URI
     private fun getFileName(uri: Uri): String {
         val cursor = contentResolver.query(uri, null, null, null, null)
         cursor?.moveToFirst()
@@ -334,9 +294,5 @@ class laporbarangtemuan : AppCompatActivity() {
         }
     }
 
-
-    fun toRequestBody(value: String): RequestBody =
-        value.toRequestBody("text/plain".toMediaTypeOrNull())
-
-
+    fun toRequestBody(value: String): RequestBody = value.toRequestBody("text/plain".toMediaTypeOrNull())
 }
