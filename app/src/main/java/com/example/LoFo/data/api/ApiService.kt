@@ -4,21 +4,24 @@ import com.example.LoFo.data.model.baranghilang.BarangHilang
 import com.example.LoFo.data.model.baranghilang.BarangHilangResponse
 import com.example.LoFo.data.model.barangtemuan.BarangTemuan
 import com.example.LoFo.data.model.barangtemuan.BarangTemuanResponse
+import com.example.LoFo.data.model.jawabanpertanyaan.JawabanPertanyaanResponse
+import com.example.LoFo.data.model.jawabanpertanyaan.daftarlaporanklaimresponse
 import com.example.LoFo.data.model.login.LoginRequest
 import com.example.LoFo.data.model.login.LoginResponse
 import com.example.LoFo.data.model.logout.LogoutRequest
 import com.example.LoFo.data.model.logout.LogoutResponse
+import com.example.LoFo.data.model.notifikasi.Notifikasi
 import com.example.LoFo.data.model.register.RegisterRequest
 import com.example.LoFo.data.model.register.RegisterResponse
 import com.example.LoFo.data.model.user.User
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
-import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
@@ -118,6 +121,9 @@ interface ApiService {
         @Path("id") id: String,
     ): Call<BarangTemuan>
 
+    @GET("barang-temuan/getById/{id}")
+    suspend fun getByIdBarangTemuan(@Path("id") id: String): BarangTemuan
+
     @PUT("barang-hilang/update/{id}")
     fun updateBarangHilang(
         @Path("id") id: String,
@@ -144,6 +150,37 @@ interface ApiService {
         @Part file: MultipartBody.Part,
     ): Call<BarangTemuan>
 
+    @POST("jawaban-pertanyaan/create")
+    fun createJawabanPertanyaan(
+        @Body body: Map<String, String>
+    ): Call<JawabanPertanyaanResponse>
+
+    @GET("jawaban-pertanyaan/getMyAll/{id}/{idBarangTemuan}")
+    suspend fun getMyAllJawabanPertanyaan(
+        @Path("id") id: String,
+        @Path("idBarangTemuan") idBarangTemuan: String
+    ): List<daftarlaporanklaimresponse>
+
+    @POST("notifikasi/create")
+    fun createNotifikasi(
+        @Body body: Map<String, String>
+    ) : Call<Notifikasi>
+
+    @GET("notifikasi/getMyAll/{id}")
+    suspend fun getMyAllNotifikasi(
+        @Path("id") id: String
+    ): List<Notifikasi>
+
+    @DELETE("notifikasi/delete/{id}")
+    suspend fun deleteNotifikasi(
+        @Path("id") id: Number,
+    ): Response<Notifikasi>
+
+    @PUT("notifikasi/update/{id}")
+    fun updateNotifikasi(
+        @Path("id") id: Number,
+        @Body body: Map<String, String>
+    ): Call<BarangTemuan>
 
 
 

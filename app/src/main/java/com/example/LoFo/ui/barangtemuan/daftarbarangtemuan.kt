@@ -11,6 +11,7 @@ import com.example.LoFo.MainActivity
 import com.example.LoFo.R
 import com.example.LoFo.adapter.ListDaftarBarangTemuanAdapter
 import com.example.LoFo.data.model.barangtemuan.BarangTemuan
+import com.example.LoFo.ui.barangtemuan.riwayatbarangtemuan
 
 class daftarbarangtemuan : AppCompatActivity() {
 
@@ -34,7 +35,10 @@ class daftarbarangtemuan : AppCompatActivity() {
         adapter = ListDaftarBarangTemuanAdapter(
             listBarang,
             onKlaimClick = { barangTemuan ->
-                Toast.makeText(this, "Klaim ${barangTemuan.namaBarang}", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this@daftarbarangtemuan, klaimbarangtemuan::class.java)
+                intent.putExtra("barang", barangTemuan)
+                startActivity(intent)
+
             }
         )
 

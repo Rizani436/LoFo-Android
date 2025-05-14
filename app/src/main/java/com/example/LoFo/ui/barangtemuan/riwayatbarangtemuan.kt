@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.LoFo.MainActivity
@@ -13,6 +14,10 @@ import com.example.LoFo.R
 import com.example.LoFo.adapter.ListRiwayatBarangTemuanAdapter
 import com.example.LoFo.data.api.ApiClient
 import com.example.LoFo.data.model.barangtemuan.BarangTemuan
+import com.example.LoFo.data.model.jawabanpertanyaan.JawabanPertanyaanResponse
+import com.example.LoFo.ui.beranda.Beranda
+import com.example.LoFo.utils.SharedPrefHelper
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,6 +31,8 @@ class riwayatbarangtemuan : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_riwayatbarangtemuan)
+        val user = SharedPrefHelper.getUser(this)
+        val username = user?.username
 
         val kategori = intent.getStringExtra("kategori")
         listBarang.clear()
@@ -55,7 +62,17 @@ class riwayatbarangtemuan : AppCompatActivity() {
                 startActivity(intent)
             },
             onLaporanClick = { barangTemuan ->
+                lifecycleScope.launch {
+                    try {
+                        val response = ApiClient.apiService.getMyAllJawabanPertanyaan(username.toString(), barangTemuan.idBarangTemuan)
+                        val intent = Intent(this@riwayatbarangtemuan, daftarlaporanklaim::class.java)
+                        intent.putParcelableArrayListExtra("dataJawaban", ArrayList(response))
+                        startActivity(intent)
 
+                    } catch (e: Exception) {
+                        Toast.makeText(this@riwayatbarangtemuan, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
+                    }
+                }
             },
             onSelesaiClick = { barang ->
                 if (barang.status == "Diterima") {

@@ -23,6 +23,21 @@
         android:theme="@style/Theme.Assign3"
         tools:targetApi="31">
         <activity
+            android:name=".data.model.notifikasi.tampilanhasilnotifikasi"
+            android:exported="false" />
+        <activity
+            android:name=".ui.notifikasi.notifikasi"
+            android:exported="false" />
+        <activity
+            android:name=".ui.barangtemuan.laporanklaim"
+            android:exported="false" />
+        <activity
+            android:name=".ui.barangtemuan.daftarlaporanklaim"
+            android:exported="false" />
+        <activity
+            android:name=".ui.barangtemuan.klaimbarangtemuan"
+            android:exported="false" />
+        <activity
             android:name=".ui.barangtemuan.ubahbarangtemuan"
             android:exported="false" />
         <activity

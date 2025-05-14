@@ -22,6 +22,7 @@ import com.example.LoFo.data.model.logout.LogoutResponse
 import com.example.LoFo.data.model.user.User
 import com.example.LoFo.ui.baranghilang.*
 import com.example.LoFo.ui.barangtemuan.*
+import com.example.LoFo.ui.notifikasi.notifikasi
 import com.example.LoFo.ui.profile.profile
 import com.example.LoFo.utils.SharedPrefHelper
 import com.google.android.material.navigation.NavigationView
@@ -59,7 +60,17 @@ class Beranda : AppCompatActivity() {
 
         val notificationIcon: ImageView = findViewById(R.id.notification_icon)
         notificationIcon.setOnClickListener {
-            Toast.makeText(this, "Notifikasi diklik!", Toast.LENGTH_SHORT).show()
+            val username = user?.username
+            lifecycleScope.launch {
+                try {
+                    val response = ApiClient.apiService.getMyAllNotifikasi(username.toString())
+                    val intent = Intent(this@Beranda, notifikasi::class.java)
+                    intent.putParcelableArrayListExtra("dataNotifikasi", ArrayList(response))
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(this@Beranda, "Gagal mengambil data / data kosong", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         val headerView = navView.getHeaderView(0)

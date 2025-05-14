@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/merienda_bold"
-                android:text="Ubah Barang Temuan"
+                android:text="Terima Laporan Klaim"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="10dp"
                 android:textColor="@color/black"
@@ -70,10 +70,22 @@
             android:padding="1dp"
             tools:src="@android:color/darker_gray"
             />
+        <TextView
+            android:id="@+id/namaBarang"
+            android:textSize="14dp"
+            android:paddingLeft="13dp"
+            android:paddingRight="13dp"
+            android:gravity="center"
+            android:layout_marginTop="200dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="185dp"
+            android:text="Rumah Sakit Kota"
+            android:justificationMode="inter_word"
+            android:layout_height="40dp" />
         <LinearLayout
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="210dp"
+            android:layout_marginTop="240dp"
             android:layout_centerHorizontal="true"
             android:orientation="vertical">
             <RelativeLayout
@@ -89,17 +101,7 @@
                     android:background="@drawable/border_ubah"
                     android:layout_width="110dp"
                     android:layout_height="wrap_content" />
-                <EditText
-                    android:id="@+id/namaBarang"
-                    android:textSize="14dp"
-                    android:paddingLeft="13dp"
-                    android:paddingRight="13dp"
-                    android:background="@drawable/border_ubah"
-                    android:layout_alignParentRight="true"
-                    android:layout_width="185dp"
-                    android:text="Rumah Sakit Kota"
-                    android:justificationMode="inter_word"
-                    android:layout_height="40dp" />
+
             </RelativeLayout>
             <RelativeLayout
                 android:orientation="horizontal"

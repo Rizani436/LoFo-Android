@@ -61,7 +61,7 @@ dependencies {
     implementation(libs.glide)
     kapt(libs.glide.compiler)
     implementation(libs.circleimageview)
-    implementation ("com.github.yalantis:ucrop:2.2.6")
+    implementation ("com.github.yalantis:ucrop:2.2.8")
 
 
 

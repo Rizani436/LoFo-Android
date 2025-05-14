@@ -52,92 +52,105 @@
             android:paddingBottom="8dp"/>
 
     </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:padding="10dp">
+
         <ImageView
             android:id="@+id/img_item_photo"
-            android:layout_centerHorizontal="true"
             android:layout_width="299dp"
             android:layout_height="199dp"
-            android:background="@drawable/border"
+            android:layout_centerHorizontal="true"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:background="@drawable/border"
             android:clickable="true"
             android:focusable="true"
             android:padding="1dp"
-            tools:src="@android:color/darker_gray"
-            />
+            tools:src="@android:color/darker_gray" />
+
         <LinearLayout
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="210dp"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="210dp"
             android:orientation="vertical">
+
             <RelativeLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <TextView
-                    android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:paddingLeft="5dp"
-                    android:text="Nama Barang"
-                    android:paddingRight="5dp"
-                    android:background="@drawable/border_ubah"
                     android:layout_width="110dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_ubah"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="Nama  Barang"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
                 <EditText
                     android:id="@+id/namaBarang"
-                    android:textSize="16dp"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:background="@drawable/border_ubah"
-                    android:layout_alignParentRight="true"
-                    android:layout_width="185dp"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
-            <RelativeLayout
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:paddingLeft="5dp"
-                    android:text="Kategori Barang"
-                    android:paddingRight="5dp"
-                    android:background="@drawable/border_ubah"
-                    android:layout_width="110dp"
-                    android:layout_height="wrap_content" />
-                <Spinner
-                    android:id="@+id/kategoriBarang"
-                    android:textSize="16dp"
-                    android:paddingLeft="5dp"
-                    android:background="@drawable/border_ubah"
-                    android:layout_alignParentRight="true"
-                    android:paddingRight="5dp"
                     android:layout_width="185dp"
                     android:layout_height="40dp"
-                    />
-            </RelativeLayout>
-            <RelativeLayout
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:paddingLeft="5dp"
-                    android:text="Tanggal Kehilangan"
+                    android:layout_alignParentRight="true"
                     android:background="@drawable/border_ubah"
+                    android:paddingLeft="13dp"
+                    android:paddingRight="13dp"
+                    android:justificationMode="inter_word"
+                    android:text="Rumah makan ayam"
+                    android:textSize="14dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
                     android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_ubah"
+                    android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:layout_height="wrap_content" />
+                    android:text="Kategori Barang"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/kategoriBarang"
+                    android:layout_width="185dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/border_ubah"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:justificationMode="inter_word"
+                    android:textSize="14dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_ubah"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="Tanggal Kehilangan"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -147,134 +160,153 @@
                         android:id="@+id/tanggalKehilangan"
                         android:layout_width="185dp"
                         android:layout_height="40dp"
-                        android:background="@drawable/border_ubah"
-                        android:textSize="16dp"
-                        android:paddingLeft="5dp"
-                        android:hint="mm/dd/yyyy"
-                        android:focusable="false"
-                        android:clickable="true"
-                        android:inputType="none"
                         android:layout_alignParentRight="true"
-                        />
+                        android:background="@drawable/border_ubah"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:hint="mm/dd/yyyy"
+                        android:justificationMode="inter_word"
+                        android:inputType="none"
+                        android:paddingLeft="13dp"
+                        android:paddingRight="13dp"
+                        android:textSize="14dp" />
                 </RelativeLayout>
 
             </RelativeLayout>
+
             <RelativeLayout
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
                 <TextView
-                    android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:paddingLeft="5dp"
-                    android:text="Tempat Kehilangan"
-                    android:background="@drawable/border_ubah"
-                    android:paddingRight="5dp"
                     android:layout_width="110dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_ubah"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="Tempat Kehilangan"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
                 <EditText
                     android:id="@+id/tempatKehilangan"
-                    android:maxLines="2"
-                    android:textSize="16dp"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:background="@drawable/border_ubah"
-                    android:layout_alignParentRight="true"
-                    android:layout_width="185dp"
-                    android:layout_height="40dp" />
-            </RelativeLayout>
-            <RelativeLayout
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:paddingRight="5dp"
-                    android:paddingLeft="5dp"
-                    android:text=" Kota / Kabupaten"
-                    android:background="@drawable/border_ubah"
-                    android:layout_width="110dp"
-                    android:layout_height="wrap_content" />
-                <Spinner
-                    android:id="@+id/kotaKabupaten"
-                    android:textSize="16dp"
-                    android:paddingLeft="5dp"
-                    android:background="@drawable/border_ubah"
-                    android:layout_alignParentRight="true"
-                    android:paddingRight="5dp"
                     android:layout_width="185dp"
                     android:layout_height="40dp"
-                    />
-            </RelativeLayout>
-            <RelativeLayout
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:paddingLeft="5dp"
-                    android:gravity="center"
-                    android:text="Informasi  Detail   "
+                    android:layout_alignParentRight="true"
                     android:background="@drawable/border_ubah"
-                    android:paddingRight="5dp"
+                    android:text="Mataram"
+                    android:maxLines="2"
+                    android:justificationMode="inter_word"
+                    android:paddingLeft="13dp"
+                    android:paddingRight="13dp"
+                    android:textSize="14dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
                     android:layout_width="110dp"
-                    android:layout_height="75dp" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_ubah"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="Kota / Kabupaten"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/kotaKabupaten"
+                    android:layout_width="185dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/border_ubah"
+                    android:paddingLeft="5dp"
+                    android:gravity="top"
+                    android:paddingRight="5dp"
+                    android:textSize="14dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="110dp"
+                    android:layout_height="75dp"
+                    android:background="@drawable/border_ubah"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="Informasi  Detail   "
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
                 <EditText
                     android:id="@+id/informasiDetail"
-                    android:maxLines="5"
-                    android:textSize="16dp"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-
-                    android:background="@drawable/border_ubah"
-                    android:layout_alignParentRight="true"
                     android:layout_width="185dp"
-                    android:layout_height="75dp" />
-            </RelativeLayout>
-            <RelativeLayout
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:paddingLeft="5dp"
-                    android:text="Nomor Handphone"
+                    android:layout_height="75dp"
+                    android:layout_alignParentRight="true"
                     android:background="@drawable/border_ubah"
-                    android:paddingRight="5dp"
+                    android:gravity="top"
+                    android:maxLines="5"
+                    android:justificationMode="inter_word"
+                    android:paddingLeft="13dp"
+                    android:text="sdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfd"
+                    android:paddingRight="13dp"
+                    android:textSize="14dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
                     android:layout_width="110dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_ubah"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="Nomor Handphone"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
                 <EditText
                     android:id="@+id/noHP"
-                    android:maxLines="2"
-                    android:textSize="16dp"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:background="@drawable/border_ubah"
-                    android:layout_alignParentRight="true"
                     android:layout_width="185dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/border_ubah"
                     android:inputType="phone"
-                    android:layout_height="40dp" />
+                    android:gravity="top"
+                    android:paddingLeft="13dp"
+                    android:justificationMode="inter_word"
+                    android:paddingRight="13dp"
+                    android:text="098349838728"
+                    android:textSize="14dp" />
             </RelativeLayout>
+
             <Button
                 android:id="@+id/buttonUbah"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_gravity="center"
-                android:fontFamily="@font/merienda_bold"
-                android:textAlignment="center"
-                android:paddingTop="0dp"
                 android:layout_marginTop="10dp"
+                android:fontFamily="@font/merienda_bold"
+                android:paddingTop="0dp"
                 android:text="Ubah"
+                android:textAlignment="center"
                 android:textSize="16dp"
-                app:cornerRadius="3dp"
-                app:backgroundTint="#4CAF50"/>
+                app:backgroundTint="#4CAF50"
+                app:cornerRadius="3dp" />
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>
