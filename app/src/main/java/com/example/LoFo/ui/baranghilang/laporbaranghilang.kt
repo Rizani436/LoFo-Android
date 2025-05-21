@@ -159,7 +159,7 @@ class laporbaranghilang : AppCompatActivity() {
             val kotaKabupatenBody = toRequestBody(kotaKabupaten.selectedItem.toString())
             val tanggalHilangBody = toRequestBody(tanggalKehilangan.text.toString())
             val informasiDetailBody = toRequestBody(informasiDetail.text.toString())
-            val noHPBody = toRequestBody(nomorHandphone.text.toString())
+            val noHPBody = toRequestBody("62"+nomorHandphone.text.toString())
             val latitudeBody = latitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
             val longitudeBody = longitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
             val statusBody = toRequestBody("Menunggu")

@@ -10,10 +10,12 @@ import com.example.LoFo.data.model.login.LoginRequest
 import com.example.LoFo.data.model.login.LoginResponse
 import com.example.LoFo.data.model.logout.LogoutRequest
 import com.example.LoFo.data.model.logout.LogoutResponse
+import com.example.LoFo.data.model.notifikasi.Notif
 import com.example.LoFo.data.model.notifikasi.Notifikasi
 import com.example.LoFo.data.model.register.RegisterRequest
 import com.example.LoFo.data.model.register.RegisterResponse
 import com.example.LoFo.data.model.user.User
+import com.google.gson.JsonObject
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -180,7 +182,29 @@ interface ApiService {
     fun updateNotifikasi(
         @Path("id") id: Number,
         @Body body: Map<String, String>
-    ): Call<BarangTemuan>
+    ): Call<Notif>
+
+    @GET("notifikasi/getMyAllNoRead/{id}")
+    suspend fun getMyAllNoReadNotifikasi(
+        @Path("id") id: String
+    ): Response<String>
+
+    @POST("user/forgot-password")
+    suspend fun getCodeEmail(
+        @Body body: Map<String, String>
+    ): Response<JsonObject>
+
+    @POST("user/confirm-reset-code")
+    suspend fun confirmCode(
+        @Body body: Map<String, String>
+    ): Response<JsonObject>
+
+    @PUT("user/reset-password")
+    suspend fun resetPassword(
+        @Body body: Map<String, String>
+    ): Response<JsonObject>
+
+
 
 
 

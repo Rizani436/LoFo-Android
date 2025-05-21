@@ -17,6 +17,7 @@ import com.example.LoFo.data.api.ApiClient
 import com.example.LoFo.data.model.baranghilang.BarangHilang
 import com.example.LoFo.data.model.barangtemuan.BarangTemuan
 import com.example.LoFo.data.model.jawabanpertanyaan.daftarlaporanklaimresponse
+import com.example.LoFo.data.model.notifikasi.Notif
 import com.example.LoFo.data.model.notifikasi.Notifikasi
 import com.example.LoFo.ui.baranghilang.daftarbaranghilang
 import com.example.LoFo.ui.baranghilang.ubahbaranghilang
@@ -75,27 +76,32 @@ class notifikasi : AppCompatActivity() {
                 }
             },
             onTampilkanClick = { Notifikasi ->
-                val map = mapOf(
-                    "read" to "sudahDibaca"
-                )
-                ApiClient.apiService.updateNotifikasi(Notifikasi.notification_id, map)
-                    .enqueue(object : Callback<BarangTemuan> {
-                        override fun onResponse(call: Call<BarangTemuan>, response: Response<BarangTemuan>) {
-                            if (response.isSuccessful) {
-                                Toast.makeText(this@notifikasi, "Berhasil Memperbarui barang", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(this@notifikasi, "Gagal memperbarui barang", Toast.LENGTH_SHORT).show()
-                            }
-                            val intent = Intent(this@notifikasi, ubahbarangtemuan::class.java)
-                            intent.putExtra("barangTemuan", response.body())
-                            startActivity(intent)
-                        }
-                        override fun onFailure(call: Call<BarangTemuan>, t: Throwable) {
-                            Toast.makeText(this@notifikasi, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
-                        }
-                    })
 
-            },
+                if (Notifikasi.pesanNotifikasi == "Telah menerima klaim barang Anda") {
+                    val map = mapOf(
+                        "read" to "sudahDibaca"
+                    )
+                    ApiClient.apiService.updateNotifikasi(Notifikasi.notification_id, map)
+                        .enqueue(object : Callback<Notif> {
+                            override fun onResponse(call: Call<Notif>, response: Response<Notif>) {
+                                val intent =
+                                    Intent(this@notifikasi, tampilanhasilnotifikasi::class.java)
+                                intent.putExtra("barangTemuan", response.body())
+                                startActivity(intent)
+                            }
+
+                            override fun onFailure(call: Call<Notif>, t: Throwable) {
+                                Toast.makeText(
+                                    this@notifikasi,
+                                    "Error: ${t.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        })
+                }else{
+                    Toast.makeText(this@notifikasi, "Notifikasi tidak dapat ditampilkan", Toast.LENGTH_SHORT).show()
+                }
+            }
 
         )
 

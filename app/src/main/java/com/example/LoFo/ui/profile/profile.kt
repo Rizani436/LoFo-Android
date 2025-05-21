@@ -39,6 +39,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import android.util.Log
+import android.view.View
 import com.yalantis.ucrop.UCrop
 
 class profile : AppCompatActivity() {
@@ -217,7 +218,12 @@ class profile : AppCompatActivity() {
         val user = SharedPrefHelper.getUser(this)
         val id = user?.username
 
-        val view = LayoutInflater.from(this).inflate(R.layout.dialog_edit, null)
+        var view : View
+        if (jenis == "Nomor HP") {
+            view = LayoutInflater.from(this).inflate(R.layout.dialog_editnohp, null)
+        }else {
+            view = LayoutInflater.from(this).inflate(R.layout.dialog_edit, null)
+        }
         val etNewName = view.findViewById<EditText>(R.id.etNewName)
         val tvDialogTitle = view.findViewById<TextView>(R.id.tvDialogTitle)
         tvDialogTitle.text = "Masukkan $jenis Baru"
@@ -255,7 +261,7 @@ class profile : AppCompatActivity() {
                         updateMap["alamat"] = newName.toString()
                     }
                     else if(jenis=="Nomor HP"){
-                        updateMap["noHP"] = newName.toString()
+                        updateMap["noHP"] = "62"+newName.toString()
                     } else if (jenis == "Password") {
                         updateMap["password"] = newName.toString()
                     }

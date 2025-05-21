@@ -36,15 +36,33 @@
                     android:textStyle="bold" />
 
                 <!-- Icon notifikasi -->
-                <ImageView
-                    android:id="@+id/notification_icon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="16dp"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/notifikasi"
-                    android:contentDescription="Notifikasi" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="10dp">
+                    <ImageView
+                        android:id="@+id/notification_icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="16dp"
+                        android:src="@drawable/notifikasi"
+                        android:contentDescription="Notifikasi" />
+                    <TextView
+                        android:id="@+id/jumlahNotifikasi"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:visibility="invisible"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:layout_marginTop="1dp"
+                        android:textColor="#FFFFFF"
+                        android:background="@drawable/notifikasi_icon">
+                    </TextView>
+                </RelativeLayout>
+
+
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 

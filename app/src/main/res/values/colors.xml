@@ -4,4 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="teal_700">#00796B</color>
     <color name="cream">#C8BE8C</color>
+    <color name="gray">#CCCCCC</color>
+    <color name="primary">#2196F3</color>
 </resources>

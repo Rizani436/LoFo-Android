@@ -214,19 +214,35 @@
             android:textSize="20dp"
             >
         </TextView>
-        <EditText
-            android:id="@+id/nomorHandphone"
-            android:layout_width="304dp"
-            android:layout_height="44dp"
-            android:layout_gravity="center"
-            android:background="@drawable/rounded_edittext"
-            android:padding="12dp"
-            android:hint="@string/masukkan_nomor_handphone"
-            android:inputType="phone"
-            android:digits="0123456789"
-            android:textSize="16dp"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             >
-        </EditText>
+            <EditText
+                android:id="@+id/nomorHandphone"
+                android:layout_width="307dp"
+                android:layout_height="44dp"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:hint="@string/masukkan_nomor_handphone"
+                android:inputType="phone"
+                android:paddingStart="50dp"
+                android:digits="0123456789"
+                android:layout_marginLeft="52dp"
+                android:textSize="16dp"
+                >
+            </EditText>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+62"
+                android:textSize="16dp"
+                android:padding="10dp"
+                android:layout_marginLeft="55dp"
+
+                />
+
+        </RelativeLayout>
         <Button
             android:id="@+id/register"
             android:layout_width="304dp"

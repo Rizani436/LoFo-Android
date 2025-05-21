@@ -134,7 +134,7 @@ class Register : AppCompatActivity() {
                 namaLengkap = namaLengkap.text.toString(),
                 jenisKelamin = jenisKelamin.selectedItem.toString(),
                 alamat = alamat.text.toString(),
-                noHP = nomorHandphone.text.toString(),
+                noHP = "62"+nomorHandphone.text.toString(),
                 pictUrl = "profile/kosong.jpg"
             )
 

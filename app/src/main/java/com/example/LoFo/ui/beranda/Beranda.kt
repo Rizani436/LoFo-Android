@@ -33,6 +33,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.view.View
+
 
 class Beranda : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -58,6 +60,7 @@ class Beranda : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
+        val jumlahNotifikasi = findViewById<TextView>(R.id.jumlahNotifikasi)
         val notificationIcon: ImageView = findViewById(R.id.notification_icon)
         notificationIcon.setOnClickListener {
             val username = user?.username
@@ -72,6 +75,29 @@ class Beranda : AppCompatActivity() {
                 }
             }
         }
+        lifecycleScope.launch {
+            try {
+                val username = user?.username
+                val response = ApiClient.apiService.getMyAllNoReadNotifikasi(username.toString())
+
+                if (response.isSuccessful) {
+                    val jumlahString = response.body() ?: "0"
+                    val jumlah = jumlahString.toIntOrNull() ?: 0
+
+                    if (jumlah > 0) {
+                        jumlahNotifikasi.visibility = View.VISIBLE
+                        jumlahNotifikasi.text = jumlah.toString()
+                    } else {
+                        jumlahNotifikasi.visibility = View.GONE
+                    }
+                } else {
+                    jumlahNotifikasi.visibility = View.GONE
+                }
+            } catch (e: Exception) {
+                jumlahNotifikasi.visibility = View.GONE
+            }
+        }
+
 
         val headerView = navView.getHeaderView(0)
         val imageProfile = headerView.findViewById<ImageView>(R.id.image_profile)
@@ -277,4 +303,5 @@ class Beranda : AppCompatActivity() {
             }
         })
     }
+
 }

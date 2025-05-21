@@ -23,7 +23,13 @@
         android:theme="@style/Theme.Assign3"
         tools:targetApi="31">
         <activity
-            android:name=".data.model.notifikasi.tampilanhasilnotifikasi"
+            android:name=".ui.login.gantipassword"
+            android:exported="false" />
+        <activity
+            android:name=".ui.login.lupapassword"
+            android:exported="false" />
+        <activity
+            android:name=".ui.notifikasi.tampilanhasilnotifikasi"
             android:exported="false" />
         <activity
             android:name=".ui.notifikasi.notifikasi"

@@ -7,7 +7,7 @@
       </SelectionState>
       <SelectionState runConfigName="LoFo.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-05-10T12:19:16.622465800Z">
+        <DropdownSelection timestamp="2025-05-15T02:43:27.797633100Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=qgfqaazdp78tu8gy" />

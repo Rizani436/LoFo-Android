@@ -6,6 +6,7 @@ import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +28,7 @@ class login : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         var username = findViewById<EditText>(R.id.username)
         var password = findViewById<EditText>(R.id.password)
+        val lupaPassword = findViewById<TextView>(R.id.lupaPassword)
         val showPasswordIcon = findViewById<ImageView>(R.id.showPasswordIcon)
         var isPasswordVisible = false
         showPasswordIcon.setOnClickListener {
@@ -45,6 +47,10 @@ class login : AppCompatActivity() {
         var buttonBack : ImageView = findViewById<ImageView>(R.id.back)
         buttonBack.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+        lupaPassword.setOnClickListener {
+            val intent = Intent(this, lupapassword::class.java)
             startActivity(intent)
         }
         var buttonLogin : Button = findViewById<Button>(R.id.login)
