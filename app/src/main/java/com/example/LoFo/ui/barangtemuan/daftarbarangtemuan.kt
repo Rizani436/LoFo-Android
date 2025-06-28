@@ -38,7 +38,6 @@ class daftarbarangtemuan : AppCompatActivity() {
                 val intent = Intent(this@daftarbarangtemuan, klaimbarangtemuan::class.java)
                 intent.putExtra("barang", barangTemuan)
                 startActivity(intent)
-
             }
         )
 

@@ -33,12 +33,13 @@ import java.util.Locale
 import androidx.lifecycle.lifecycleScope
 import com.example.LoFo.data.model.barangtemuan.BarangTemuan
 import com.example.LoFo.data.model.jawabanpertanyaan.JawabanPertanyaanResponse
+import com.example.LoFo.ui.barangtemuan.laporanklaim
 import com.example.LoFo.ui.beranda.Beranda
 import com.example.LoFo.utils.SharedPrefHelper
 import kotlinx.coroutines.launch
 
 class klaimbarangtemuan : AppCompatActivity() {
-    lateinit var jawaban : JawabanPertanyaanResponse
+    lateinit var barang : BarangTemuan
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_klaimbarangtemuan)
@@ -54,13 +55,18 @@ class klaimbarangtemuan : AppCompatActivity() {
         val buttonBack = findViewById<ImageView>(R.id.back)
         var idBarangTemuan = ""
         var penanya = ""
-//        jawaban = intent.getParcelableExtra<JawabanPertanyaanResponse>("jawaban")!!
-//        jawaban.let {
-//            pertanyaan.setText(it.pertanyaan)
-//            uploader.text = it.penanya
-//
-//            idBarangTemuan = it.idBarangTemuan
-//        }
+        barang = intent.getParcelableExtra<BarangTemuan>("barang")!!
+        barang.let {
+            pertanyaan.setText(it.informasiDetail)
+            uploader.text = it.uploader
+
+            idBarangTemuan = it.idBarangTemuan
+            Glide.with(this@klaimbarangtemuan)
+                .load(it?.pictUrl)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
+                .into(imgItemPhoto)
+        }
 
         buttonKlaim.setOnClickListener {
             val map = mapOf(

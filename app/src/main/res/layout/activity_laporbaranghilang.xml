@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/merienda_light"
-            android:text="Tanggal Penemuan"
+            android:text="Tanggal Kehilangan"
             android:textColor="@color/black"
             android:textSize="16dp"
             android:layout_marginBottom="5dp"
