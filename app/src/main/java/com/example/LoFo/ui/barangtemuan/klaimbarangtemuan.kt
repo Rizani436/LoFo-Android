@@ -59,6 +59,8 @@ class klaimbarangtemuan : AppCompatActivity() {
         barang.let {
             pertanyaan.setText(it.informasiDetail)
             uploader.text = it.uploader
+            penanya = it.uploader
+
 
             idBarangTemuan = it.idBarangTemuan
             Glide.with(this@klaimbarangtemuan)
