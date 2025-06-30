@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://backend-web-admin.onrender.com") // ganti dengan base URL kamu
+        .baseUrl("https://backend-web-admin.onrender.com")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

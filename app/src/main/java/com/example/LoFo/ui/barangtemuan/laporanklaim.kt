@@ -47,6 +47,7 @@ class laporanklaim : AppCompatActivity() {
             jawabannya.setText(it.jawaban)
             idBarangTemuan = it.idBarangTemuan
             penjawab = it.penjawab
+            username.setText(it.penjawab)
         }
         var pictUrl = ""
         lifecycleScope.launch {
